@@ -1525,7 +1525,95 @@ class Ion_auth_model extends CI_Model
 
 		return $this;
 	}
-
+	public function client_users()
+	{
+		$this->trigger_events('client_users');
+	
+		if (isset($this->_ion_select) && !empty($this->_ion_select))
+		{
+			foreach ($this->_ion_select as $select)
+			{
+				$this->db->select($select);
+			}
+	
+			$this->_ion_select = [];
+		}
+		else
+		{
+			// default selects
+			$this->db->select([
+				$this->tables['users'].'.*',
+				$this->tables['users'].'.id as id',
+				$this->tables['users'].'.id as user_id'
+			]);
+		}
+	
+		$saas_id = $this->session->userdata('saas_id');
+	
+		// Join with users_groups and groups to filter by 'client' group name and matching 'saas_id'
+		$this->db->distinct();
+		$this->db->join(
+			$this->tables['users_groups'],
+			$this->tables['users_groups'].'.'.$this->join['users'].'='.$this->tables['users'].'.id',
+			'inner'
+		);
+	
+		$this->db->join($this->tables['groups'], $this->tables['users_groups'].'.'.$this->join['groups'].' = '.$this->tables['groups'].'.id', 'inner');
+	
+		$this->db->where('groups.name', 'client');
+		$this->db->where('groups.saas_id', $saas_id);
+	
+		$this->trigger_events('extra_where');
+	
+		// Run each where that was passed
+		if (isset($this->_ion_where) && !empty($this->_ion_where))
+		{
+			foreach ($this->_ion_where as $where)
+			{
+				$this->db->where($where);
+			}
+	
+			$this->_ion_where = [];
+		}
+	
+		if (isset($this->_ion_like) && !empty($this->_ion_like))
+		{
+			foreach ($this->_ion_like as $like)
+			{
+				$this->db->or_like($like['like'], $like['value'], $like['position']);
+			}
+	
+			$this->_ion_like = [];
+		}
+	
+		if (isset($this->_ion_limit) && isset($this->_ion_offset))
+		{
+			$this->db->limit($this->_ion_limit, $this->_ion_offset);
+	
+			$this->_ion_limit  = NULL;
+			$this->_ion_offset = NULL;
+		}
+		else if (isset($this->_ion_limit))
+		{
+			$this->db->limit($this->_ion_limit);
+	
+			$this->_ion_limit  = NULL;
+		}
+	
+		// Set the order
+		if (isset($this->_ion_order_by) && isset($this->_ion_order))
+		{
+			$this->db->order_by($this->_ion_order_by, $this->_ion_order);
+	
+			$this->_ion_order    = NULL;
+			$this->_ion_order_by = NULL;
+		}
+	
+		$this->response = $this->db->get($this->tables['users']);
+	
+		return $this;
+	}
+	
 	/**
 	 * user
 	 *

@@ -653,19 +653,18 @@ class Projects_model extends CI_Model
         $sort = 'p.id'; $order = 'ASC';
         $get = $this->input->get();
         $where = '';
-        if($this->ion_auth->is_admin() || permissions('project_view_all')) {
-            $where = "WHERE p.saas_id=".$this->session->userdata('saas_id');
-        }else{
-            $where = "WHERE p.saas_id=".$this->session->userdata('saas_id');
-        }
 
-        if($this->ion_auth->in_group(4)){
-            if(!empty($get['client'])){
-                $where .= " AND p.client_id=".$this->session->userdata('user_id');
-            }
-        }else{
-            if(!empty($get['user'])){
-                $where .= " AND pu.user_id=".$this->session->userdata('user_id');
+        $where = "WHERE p.saas_id=".$this->session->userdata('saas_id');
+
+        if(!$this->ion_auth->is_admin()  && !permissions('project_view_all')) {
+            if(is_client()){
+                if(empty($get['client'])){
+                    $where .= " AND p.client_id=".$this->session->userdata('user_id');
+                }
+            }else{
+                if(empty($get['user'])){
+                    $where .= " AND pu.user_id=".$this->session->userdata('user_id');
+                }
             }
         }
 
@@ -859,7 +858,7 @@ class Projects_model extends CI_Model
         $where .= (!empty($project_id) && is_numeric($project_id) && empty($where))?"WHERE pu.project_id=$project_id":"";
 
         if(!empty($user_id) && is_numeric($user_id)){
-            if($this->ion_auth->in_group(4)){
+            if(is_client()){
                 $where .= (empty($where))?" WHERE p.client_id=$user_id ":" AND p.client_id=$user_id ";
             }else{
                 $where .= (empty($where))?" WHERE pu.user_id=$user_id ":"";
@@ -949,7 +948,7 @@ class Projects_model extends CI_Model
         }
 
         if(!empty($user_id) && is_numeric($user_id)){
-            if($this->ion_auth->in_group(4)){
+            if(is_client()){
                 $where .= (empty($where))?" WHERE p.client_id=$user_id ":" AND p.client_id=$user_id ";
             }else{
                 $where .= (empty($where))?" WHERE tu.user_id=$user_id ":"";
@@ -1086,7 +1085,7 @@ class Projects_model extends CI_Model
         $where = "WHERE t.saas_id=".$this->session->userdata('saas_id');
 
         if(!$this->ion_auth->is_admin()){
-            if($this->ion_auth->in_group(4)){
+            if(is_client()){
                 $where .= " AND p.client_id=".$this->session->userdata('user_id');
             }else{
                 if(empty($get['user'])){

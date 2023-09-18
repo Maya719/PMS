@@ -191,15 +191,26 @@
                     <?php
                       if($this->ion_auth->is_admin() || permissions('project_view_all')){
                         $pendingP = get_count('id','projects','(status=1 OR status=2) AND saas_id='.htmlspecialchars($this->session->userdata('saas_id')));
-                      }elseif($this->ion_auth->in_group(4)){
+                      }elseif(is_client()){
                         $pendingP =  get_count('id','projects','(status=1 OR status=2) AND client_id='.htmlspecialchars($this->session->userdata('user_id')));
+                      }elseif(permissions('project_view_selected')){
+                        $selectedUsers = selected_users();
+                        foreach ($selectedUsers as $selectedUser) {
+                          $pendingP += get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','(status=1 OR status=2) AND pu.user_id='.htmlspecialchars($selectedUser));
+                        }
                       }else{
                         $pendingP = get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','(status=1 OR status=2) AND pu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
                       }
+                      
                       if($this->ion_auth->is_admin() || permissions('project_view_all')){
                         $completedP = get_count('id','projects','status=3 AND saas_id='.htmlspecialchars($this->session->userdata('saas_id')));
-                      }elseif($this->ion_auth->in_group(4)){
+                      }elseif(is_client()){
                         $completedP =  get_count('id','projects','status=3 AND client_id='.htmlspecialchars($this->session->userdata('user_id')));
+                      }elseif(permissions('project_view_selected')){
+                        $selectedUsers = selected_users();
+                        foreach ($selectedUsers as $selectedUser) {
+                          $completedP += get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','status=3 AND pu.user_id='.htmlspecialchars($selectedUser));
+                        }
                       }else{
                         $completedP = get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','status=3 AND pu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
                       }
@@ -243,15 +254,25 @@
                     <?php 
                       if($this->ion_auth->is_admin() || permissions('project_view_all')){
                         $pendingT =  get_count('id','tasks','(status=1 OR status=2 OR status=3) AND saas_id='.htmlspecialchars($this->session->userdata('saas_id')));
-                      }elseif($this->ion_auth->in_group(4)){
+                      }elseif(is_client()){
                         $pendingT = get_count('t.id','tasks t LEFT JOIN projects p on t.project_id = p.id','(t.status=1 OR t.status=2 OR t.status=3) AND p.client_id = '.htmlspecialchars($this->session->userdata('user_id')));
+                      }elseif(permissions('project_view_selected')){
+                        $selectedUsers = selected_users();
+                        foreach ($selectedUsers as $selectedUser) {
+                          $pendingT =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','(status=1 OR status=2 OR status=3) AND tu.user_id='.htmlspecialchars($selectedUser));
+                        }
                       }else{
                         $pendingT =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','(status=1 OR status=2 OR status=3) AND tu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
                       }
                       if($this->ion_auth->is_admin() || permissions('project_view_all')){
                         $completedT =  get_count('id','tasks','status=4 AND saas_id='.$this->session->userdata('saas_id'));
-                      }elseif($this->ion_auth->in_group(4)){
+                      }elseif(is_client()){
                         $completedT = get_count('t.id','tasks t LEFT JOIN projects p on t.project_id = p.id','t.status=4 AND p.client_id = '.htmlspecialchars($this->session->userdata('user_id')));
+                      }elseif(permissions('project_view_selected')){
+                        $selectedUsers = selected_users();
+                        foreach ($selectedUsers as $selectedUser) {
+                          $completedT +=  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status=4 AND tu.user_id='.$selectedUser);
+                        }
                       }else{
                         $completedT =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status=4 AND tu.user_id='.$this->session->userdata('user_id'));
                       }
@@ -285,7 +306,7 @@
               </div>
             </div>
             
-            <!-- <?php if($this->ion_auth->is_admin() || $this->ion_auth->in_group(4)){ 
+            <!-- <?php if($this->ion_auth->is_admin() || is_client()){ 
               $get_my_invoices_details = get_my_invoices_details();
             ?>
               <div class="col-lg-4 col-md-4 col-sm-12">
@@ -405,8 +426,14 @@
     $tmpP[] = $project_title['title'];
     if($this->ion_auth->is_admin() || permissions('project_view_all')){
       $tmpPV[] =  get_count('id','projects','status='.$project_title['id'].' AND saas_id='.htmlspecialchars($this->session->userdata('saas_id')));
-    }elseif($this->ion_auth->in_group(4)){
+    }elseif(is_client()){
       $tmpPV[] =  get_count('id','projects','client_id='.htmlspecialchars($this->session->userdata('user_id')).' AND status='.htmlspecialchars($project_title['id']));
+    }elseif(permissions('project_view_selected')){
+      $selectedUsers = selected_users();
+      foreach ($selectedUsers as $selectedUser) {
+        $chartSelector += get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','status='.$project_title['id'].' AND pu.user_id='.htmlspecialchars($selectedUser));
+      }
+      $tmpPV[] =  $chartSelector;
     }else{
       $tmpPV[] =  get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','status='.$project_title['id'].' AND pu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
     }
@@ -416,7 +443,7 @@
     $tmpT[] = $task_title['title'];
     if($this->ion_auth->is_admin() || permissions('project_view_all')){
       $tmpTV[] =  get_count('id','tasks','status='.htmlspecialchars($task_title['id']).' AND saas_id='.htmlspecialchars($this->session->userdata('saas_id')));
-    }elseif($this->ion_auth->in_group(4)){
+    }elseif(is_client()){
       $tmpTV[] =  get_count('t.id','tasks t LEFT JOIN projects p on t.project_id = p.id','p.client_id = '.htmlspecialchars($this->session->userdata('user_id')).' AND t.status = '.htmlspecialchars($task_title['id']));
     }else{
       $tmpTV[] =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status='.htmlspecialchars($task_title['id']).' AND tu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
