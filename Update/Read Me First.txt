@@ -1,0 +1,14 @@
+Steps to update your system.
+
+1. Goto settings->update
+2. Select the version you want to update from here.
+3. First select update zip file and hit install update button. After the success message Hard refresh(Most Important) your browser.
+4. If there are any additional zip file then select an additional zip file and again hit install update button. After the success message Hard refresh(Most Important) your browser.
+5. Must check your application settings after update is successful. That's it.
+
+If you get any error after update then go to yourdomain.com/settings/migrate 
+If still error not solved then contact support team.
+
+Note: Update your system in sequence like version 1 to version 2. Not direct version 1 to version 3.
+
+Thank You.

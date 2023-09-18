@@ -1,0 +1,37 @@
+{
+  "name": "tablednd",
+  "version": "1.0.5",
+  "description": "JQuery plugin for dragging and dropping rows in a table",
+  "main": "dist/jquery.tablednd.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "1.5.3",
+    "grunt-contrib-jshint": "3.2.0",
+    "grunt-contrib-uglify": "5.2.2",
+    "jshint": "2.13.5",
+    "release-it": "15.4.2"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "make-dist": "grunt",
+    "release": "release-it",
+    "release-dry-run": "release-it --dry-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isocra/TableDnD.git"
+  },
+  "keywords": [
+    "tablednd",
+    "drag",
+    "and",
+    "drop",
+    "jquery"
+  ],
+  "author": "DenisH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/isocra/TableDnD/issues"
+  },
+  "homepage": "https://github.com/isocra/TableDnD#readme"
+}
