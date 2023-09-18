@@ -1431,7 +1431,53 @@ function users_permissions($permissions_type = '')
         }
     }
 } 
+function is_client(){
+    $CI =& get_instance();
+    $saas_id = $CI->session->userdata('saas_id');
+    $user_id = $CI->session->userdata('user_id');
 
+    $query = $CI->db->select('groups.name AS group_name')
+    ->from('users_groups')
+    ->join('groups', 'users_groups.group_id = groups.id')
+    ->where('users_groups.user_id', $user_id)
+    ->where('groups.saas_id', $saas_id)
+    ->where('groups.name', 'client')
+    ->get();
+    if ($query->num_rows() > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function selected_users() {
+    $CI =& get_instance();
+    $saas_id = $CI->session->userdata('saas_id');
+    $user_id = $CI->session->userdata('user_id');
+
+    // Step 1: Get the 'group_id' for the current user from the 'users_groups' table
+    $CI->db->select('group_id');
+    $CI->db->where('user_id', $user_id);
+    $query = $CI->db->get('users_groups');
+
+    if ($query->num_rows() > 0) {
+        $row = $query->row();
+        $group_id = $row->group_id;
+        $row = $query->row();
+        $group_id = $row->group_id;
+         // Use the retrieved group_id to fetch assigned users from the groups table
+        $CI->db->select('assigned_users');
+        $CI->db->where('id', $group_id);
+        $CI->db->where('saas_id', $saas_id);
+        $query = $CI->db->get('groups');
+        $row = $query->row();
+        $assigned_users = $row->assigned_users;
+        $assigned_users_array = json_decode($assigned_users);
+        // $assigned_users_array[] = $user_id;
+        return $assigned_users_array;
+    }
+    return 0;
+}
 function clients_permissions($permissions_type = '')
 {
     $CI =& get_instance();

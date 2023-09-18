@@ -1457,11 +1457,11 @@ class Projects extends CI_Controller
             $userRow = $this->attendance_model->get_user_by_active();
 			// Store the fetched row in the 'system_users' key of the data array.
 			$this->data['system_users'] = $userRow;
-			$this->data['system_clients'] = $this->ion_auth->users(4)->result();
+			$this->data['system_clients'] = $this->ion_auth->client_users()->result();
 
 			$this->data['project_status'] = project_status();
 
-			if($this->ion_auth->is_admin()){
+			if($this->ion_auth->is_admin() || permissions('project_view_all')) {
 				$this->data['projects_all'] = $this->projects_model->get_projects();
 			}else{
 				$this->data['projects_all'] = $this->projects_model->get_projects($this->session->userdata('user_id'));
@@ -1484,7 +1484,7 @@ class Projects extends CI_Controller
             $userRow = $this->attendance_model->get_user_by_active();
 			// Store the fetched row in the 'system_users' key of the data array.
 			$this->data['system_users'] = $userRow;
-			$this->data['system_clients'] = $this->ion_auth->users(4)->result();
+			$this->data['system_clients'] = $this->ion_auth->client_users()->result();
 
 			$this->data['project_status'] = project_status();
 
@@ -1974,7 +1974,7 @@ class Projects extends CI_Controller
 			$this->data['task_status'] = task_status();
 			$this->data['task_priorities'] = priorities();
 
-			if($this->ion_auth->is_admin()){
+			if($this->ion_auth->is_admin() || permissions('task_view_all')){
 				if(isset($_GET['user']) && !empty($_GET['user']) && is_numeric($_GET['user'])){
 					$this->data['tasks'] = $this->projects_model->get_tasks($_GET['user'],'',$project_id);
 					$this->data['projects'] = $this->projects_model->get_projects($_GET['user']);

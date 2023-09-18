@@ -118,7 +118,7 @@ class Settings_model extends CI_Model
         $sort = 'r.id';
         $order = 'ASC';
         $get = $this->input->get();
-        $where = " WHERE saas_id = ".$this->session->userdata('saas_id');
+        $where = '';
 
         if (isset($get['sort'])) {
             $sort = strip_tags($get['sort']);
@@ -140,6 +140,7 @@ class Settings_model extends CI_Model
             $search = strip_tags($get['search']);
             $where .= " AND (s.id LIKE '%" . $search . "%' OR r.name LIKE '%" . $search . "%' OR r.description LIKE '%" . $search . "%')";
         }
+
         $query = $this->db->query("SELECT COUNT(r.id) AS total FROM groups r " . $where);
         $res = $query->result_array();
 

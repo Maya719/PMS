@@ -10,7 +10,7 @@
     </ul>
   <ul class="navbar-nav navbar-right">
 
-<?php if(!$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4) && is_module_allowed('timesheet')){ ?>
+<?php if(!$this->ion_auth->in_group(3) && !is_client() && is_module_allowed('timesheet')){ ?>
     <li id="nav_timer" class="<?=(check_my_timer())?'':'d-none'?>"><a href="<?=base_url('projects/timesheet')?>" class="nav-link nav-link-lg beep" target="_blank"><i class="far fa-clock"></i></a></li>
 <?php } ?>
 
@@ -59,15 +59,19 @@
         <?php  }
         ?>
         
-        <a href="<?=base_url('users/profile')?>" class="dropdown-item has-icon <?=(current_url() == base_url('users/profile'))?'active':''?>">
-          <i class="far fa-user"></i> <?=$this->lang->line('profile')?$this->lang->line('profile'):'Profile'?>
-        </a>
         
-        <?php if($this->ion_auth->in_group(4)){ ?>
+        
+        <?php if(is_client()){ ?>
           <a href="<?=base_url('users/company')?>" class="dropdown-item has-icon <?=(current_url() == base_url('users/company'))?'active':''?>">
             <i class="far fa-copyright"></i> <?=$this->lang->line('company')?$this->lang->line('company'):'Company'?>
           </a>
-        <?php } ?>
+        <?php }else{
+        ?>
+        <a href="<?=base_url('users/profile')?>" class="dropdown-item has-icon <?=(current_url() == base_url('users/profile'))?'active':''?>">
+        <i class="far fa-user"></i> <?=$this->lang->line('profile')?$this->lang->line('profile'):'Profile'?>
+        </a>
+        <?php
+        } ?>
 
         <div class="dropdown-divider"></div>
         <a href="<?=base_url('auth/logout')?>" class="dropdown-item has-icon text-danger">
@@ -118,7 +122,7 @@
         </li>
       <?php } ?>
 
-      <?php if(($this->ion_auth->is_admin() || permissions('project_view') || permissions('task_view') || permissions('gantt_view') || permissions('calendar_view')) && (is_module_allowed('projects') || is_module_allowed('tasks') || is_module_allowed('timesheet') || is_module_allowed('gantt') || is_module_allowed('calendar'))){ ?>           
+      <?php if(($this->ion_auth->is_admin() || is_client() || permissions('project_view') || permissions('task_view') || permissions('gantt_view') || permissions('calendar_view')) && (is_module_allowed('projects') || is_module_allowed('tasks') || is_module_allowed('timesheet') || is_module_allowed('gantt') || is_module_allowed('calendar'))){ ?>           
                 <li class="dropdown <?=((current_url() == base_url('projects') || $this->uri->segment(2) == 'detail' || $this->uri->segment(2) == 'list') || (current_url() == base_url('projects/tasks') || $this->uri->segment(2) == 'tasks-list') || current_url() == base_url('projects/timesheet') || current_url() == base_url('projects/gantt') || current_url() == base_url('projects/calendar') )?'active':''; ?>">
 
         <a class="nav-link has-dropdown" href="#"><i class="fas fa-rocket text-info"></i> 

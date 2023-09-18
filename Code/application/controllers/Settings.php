@@ -1544,6 +1544,7 @@ class Settings extends CI_Controller
 
 			if($this->form_validation->run() == TRUE){
 				$data = array(
+					'saas_id' => $this->session->userdata('saas_id'),	
 					'name' => $this->input->post('name'),	
 					'description' => $this->input->post('description'),	
 					'descriptive_name' => $this->input->post('descriptive_name'),	

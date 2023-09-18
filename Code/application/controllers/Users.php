@@ -246,7 +246,7 @@ class Users extends CI_Controller
 
 	public function company()
 	{	
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && is_client())
 		{
 			$this->data['page_title'] = 'Company Settings - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -259,6 +259,9 @@ class Users extends CI_Controller
 
 	public function profile()
 	{	
+		// error_reporting(E_ALL);
+		// ini_set("display_errors", 1);
+
 		if ($this->ion_auth->logged_in())
 		{
 			$this->data['page_title'] = 'Profile - '.company_name();
@@ -267,7 +270,7 @@ class Users extends CI_Controller
         	$this->data['shift_types'] = $query->result_array();
 			$query3 = $this->db->get('departments');
         	$this->data['departments'] = $query3->result_array();
-			
+			$tempRow = [];
 			$user_id = $profile_user->user_id;
 			// Check if the user ID is not empty and is numeric
 			if (!empty($user_id) && is_numeric($user_id)) {
@@ -275,7 +278,7 @@ class Users extends CI_Controller
 				$query = $this->db->query("SELECT * FROM users WHERE id = {$user_id}");
 				$user_data = $query->row();
 	
-				if ($user_data) {
+				if ($user_data && !is_client()) {
 					// Update the $tempRow array with the fetched user data
 					$tempRow['id'] = $user_data->id;
 					$tempRow['email'] = $user_data->email;

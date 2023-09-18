@@ -230,7 +230,7 @@
             <li class="nav-item">
               <a class="nav-link" id="attachments-tab" data-toggle="tab" href="#attachments" role="tab" aria-controls="attachments" aria-selected="false"><?=$this->lang->line('attachments')?$this->lang->line('attachments'):'Attachments'?></a>
             </li>
-            <?php if(!$this->ion_auth->in_group(4) && is_module_allowed('timesheet')){ ?>
+            <?php if(!is_client() && is_module_allowed('timesheet')){ ?>
             <li class="nav-item">
               <a class="nav-link" id="timesheet-tab" data-toggle="tab" href="#timesheet" role="tab" aria-controls="timesheet" aria-selected="false"><?=$this->lang->line('timesheet')?$this->lang->line('timesheet'):'Timesheet'?></a>
             </li>
@@ -299,7 +299,7 @@
             </div>
 
             
-            <?php if(!$this->ion_auth->in_group(4) && is_module_allowed('timesheet')){ ?>
+            <?php if(!is_client() && is_module_allowed('timesheet')){ ?>
             <div class="tab-pane fade" id="timesheet" role="tabpanel" aria-labelledby="timesheet-tab">
               <table class='table-striped' id='timesheet_list'
                 data-toggle="table"
