@@ -12,7 +12,7 @@ class Attendance extends CI_Controller
 
 	public function in_out()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4) )
 		{
 			
 			$is_running = $this->attendance_model->my_att_running($this->session->userdata('user_id'));
@@ -115,9 +115,8 @@ class Attendance extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4) && is_module_allowed('attendance'))
+		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4) && is_module_allowed('attendance') && ($this->ion_auth->is_admin() || permissions('attendance_view_all') || permissions('attendance_view') ))
 		{
-			
 			// Pass the data to the view
 			$this->data['totalStaff'] = 'N/A';
 			$this->data['presentStaff'] = 'N/A';
@@ -334,6 +333,7 @@ class Attendance extends CI_Controller
 			echo json_encode($this->data);
 		}
 	}
+	
 	public function get_attendance_report()
 	{	
 		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))

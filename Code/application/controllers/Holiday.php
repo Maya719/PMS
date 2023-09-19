@@ -12,7 +12,7 @@ class Holiday extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in()  && is_module_allowed('attendance') && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in()  && is_module_allowed('attendance') && ($this->ion_auth->in_group(1) || permissions('plan_holiday_view')))
 		{
 			$this->data['page_title'] = 'Holiday - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -30,7 +30,7 @@ class Holiday extends CI_Controller
     
 	public function create()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('plan_holiday_view')))
 		{
 			$this->form_validation->set_rules('starting_date', 'Starting Date', 'trim|strip_tags|xss_clean');
 			$this->form_validation->set_rules('ending_date', 'Ending Date', 'trim|strip_tags|xss_clean');
@@ -111,7 +111,7 @@ class Holiday extends CI_Controller
 
 	public function get_holiday()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('plan_holiday_view')))
 		{
 			return $this->holiday_model->get_holiday();
 		}else{
@@ -124,7 +124,7 @@ class Holiday extends CI_Controller
     
 	public function edit()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('plan_holiday_view')))
 		{
 			$this->form_validation->set_rules('update_id', 'Holiday ID', 'trim|required|strip_tags|xss_clean|is_numeric');
 			$this->form_validation->set_rules('remarks', 'Remarks', 'trim|required|strip_tags|xss_clean');
@@ -200,9 +200,8 @@ class Holiday extends CI_Controller
     
 	public function delete($id='')
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('plan_holiday_view')))
 		{
-
 			if(empty($id)){
 				$id = $this->uri->segment(3)?$this->uri->segment(3):'';
 			}
@@ -229,12 +228,12 @@ class Holiday extends CI_Controller
 	}
     public function get_holiday_by_id()
 	{	
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('plan_holiday_view')))
 		{	
 			$this->form_validation->set_rules('id', 'id', 'trim|required|strip_tags|xss_clean|is_numeric');
 
 			if($this->form_validation->run() == TRUE){
-				$data = $this->holiday_model->get_leaves_by_id($this->input->post('id'));
+				$data = $this->holiday_model->get_holiday_by_id($this->input->post('id'));
 				$this->data['error'] = false;
 				$this->data['data'] = $data?$data:'';
 				$this->data['message'] = "Success";

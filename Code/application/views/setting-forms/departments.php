@@ -3,7 +3,7 @@
             
 <div class="card-body row">
     <div class="col-md-1 create" >
-        <?php if($this->ion_auth->is_admin() ){ ?>
+        <?php if($this->ion_auth->is_admin() || permissions('departments_create')){ ?>
             <a href="#" id="modal-add-leaves" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
         <?php } ?>
     </div>

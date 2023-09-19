@@ -13,7 +13,7 @@
             </div>
             <h1>
             <?=$this->lang->line('clients')?$this->lang->line('clients'):'Clients'?> 
-              <?php if(my_plan_features('users')){ if($this->ion_auth->is_admin()){ ?> 
+              <?php if(my_plan_features('users')){ if($this->ion_auth->is_admin() || permissions('client_create')){ ?> 
                 <a href="#" id="modal-add-user" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
               <?php } } ?> 
             </h1>
@@ -39,7 +39,7 @@
                     <?php }else{ ?>
                       <figure class="user-avatar avatar avatar-xl rounded-circle profile-widget-picture" data-initial="<?=htmlspecialchars($system_user['short_name'])?>"></figure>
                     <?php } ?>
-                    <?php if ($this->ion_auth->is_admin()){ ?>
+                    <?php if ($this->ion_auth->is_admin() || permissions('client_edit')){ ?>
                       <a href="#" data-edit="<?=htmlspecialchars($system_user['id'])?>" class="avatar-badge modal-edit-user text-white" title="Edit" data-toggle="tooltip"><i class="fas fa-pencil-alt"></i></a>
                     <?php } ?>
                     </span> 

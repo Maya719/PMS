@@ -24,9 +24,11 @@
         </div>
     </div>
 
-    <div class="card-footer bg-whitesmoke text-md-right">
-        <button class="btn btn-primary savebtn"><?=$this->lang->line('save_changes')?$this->lang->line('save_changes'):'Save Changes'?></button>
-    </div>
+    <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('time_schedule_edit')){ ?>
+        <div class="card-footer bg-whitesmoke text-md-right">
+            <button class="btn btn-primary savebtn"><?=$this->lang->line('save_changes')?$this->lang->line('save_changes'):'Save Changes'?></button>
+        </div>
+    <?php } ?>
     <div class="result"></div>
 </form>
 

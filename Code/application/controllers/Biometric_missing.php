@@ -11,7 +11,7 @@ class Biometric_missing extends CI_Controller
 
 	public function delete($id='')
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{
 
 			if(empty($id)){
@@ -41,7 +41,7 @@ class Biometric_missing extends CI_Controller
 
 	public function edit()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{
 			$this->form_validation->set_rules('update_id', 'Biometric ID', 'trim|required|strip_tags|xss_clean|is_numeric');
 			$this->form_validation->set_rules('reason', 'Reason', 'trim|required|strip_tags|xss_clean');
@@ -118,7 +118,7 @@ class Biometric_missing extends CI_Controller
 
 	public function get_biometric_by_id()
 	{	
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{	
 			$this->form_validation->set_rules('id', 'id', 'trim|required|strip_tags|xss_clean|is_numeric');
 
@@ -142,7 +142,7 @@ class Biometric_missing extends CI_Controller
 
 	public function get_biometric()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{
 			return $this->biometric_missing_model->get_biometric();
 		}else{
@@ -154,7 +154,7 @@ class Biometric_missing extends CI_Controller
 
 	public function create()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{
 			$this->form_validation->set_rules('date', 'Date', 'trim|required|strip_tags|xss_clean');
 			$this->form_validation->set_rules('time', 'Time', 'trim|required|strip_tags|xss_clean');
@@ -235,7 +235,7 @@ class Biometric_missing extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in()  && is_module_allowed('biometric_missing') && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in()  && is_module_allowed('biometric_missing') && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{
 			$this->data['page_title'] = 'Biometric Request - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -251,7 +251,7 @@ class Biometric_missing extends CI_Controller
 
 	public function get_shift_time()
 	{	
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('biometric_request_view')))
 		{
 			$user_id = $this->input->post('user_id');
 			$result=[

@@ -49,10 +49,16 @@
                   <div class="card card-primary">
                     <div class="card-body">
                       <ul class="nav nav-pills flex-column">
-                        <li class="nav-item"><a href="<?=base_url('settings')?>" class="nav-link <?=($main_page == 'general')?'active':''?>"><i class="fas fa-cogs"></i> <?=$this->lang->line('general')?$this->lang->line('general'):'General'?></a></li>
+                        
+                        <?php if ($this->ion_auth->in_group(1) || permissions('general_view')){ ?> 
+                          <li class="nav-item"><a href="<?=base_url('settings')?>" class="nav-link <?=($main_page == 'general')?'active':''?>"><i class="fas fa-cogs"></i> <?=$this->lang->line('general')?$this->lang->line('general'):'General'?></a></li>
+                        <?php } ?>
+
+                        <!-- <?php if (is_module_allowed('payment_gateway')){ ?> 
+                          <li class="nav-item"><a href="<?=base_url('settings/payment')?>" class="nav-link <?=($main_page == 'payment')?'active':''?>"><i class="fab fa-paypal"></i> <?=$this->lang->line('payment_gateway')?$this->lang->line('payment_gateway'):'Payment Gateway'?></a></li>
+                        <?php } ?> -->
 
                         <?php if ($this->ion_auth->in_group(3)){ ?> 
-                          <li class="nav-item"><a href="<?=base_url('settings/payment')?>" class="nav-link <?=($main_page == 'payment')?'active':''?>"><i class="fab fa-paypal"></i> <?=$this->lang->line('payment_gateway')?$this->lang->line('payment_gateway'):'Payment Gateway'?></a></li>
                           <li class="nav-item"><a href="<?=base_url('settings/seo')?>" class="nav-link <?=($main_page == 'seo')?'active':''?>"><i class="fas fa-search"></i> <?=$this->lang->line('seo')?$this->lang->line('seo'):'SEO'?></a></li>
                           <li class="nav-item"><a href="<?=base_url('settings/logins')?>" class="nav-link <?=($main_page == 'logins')?'active':''?>"><i class="fab fa-google"></i> <?=$this->lang->line('social_login')?htmlspecialchars($this->lang->line('social_login')):'Social Login'?></a></li>
                           <li class="nav-item"><a href="<?=base_url('settings/email')?>" class="nav-link <?=($main_page == 'email')?'active':''?>"><i class="fas fa-at"></i> <?=$this->lang->line('email')?$this->lang->line('email'):'Email'?></a></li>
@@ -64,16 +70,36 @@
 
                           <li class="nav-item"><a href="<?=base_url('settings/custom-code')?>" class="nav-link <?=($main_page == 'custom-code')?'active':''?>"><i class="fas fa-code"></i> <?=$this->lang->line('custom_code')?$this->lang->line('custom_code'):'Custom Code'?></a></li>
                         <?php }else{ ?>
-                          <li class="nav-item"><a href="<?=base_url('settings/company')?>" class="nav-link <?=($main_page == 'company')?'active':''?>"><i class="fas fa-copyright"></i> <?=$this->lang->line('company')?$this->lang->line('company'):'Company'?></a></li>
-                          <li class="nav-item"><a href="<?=base_url('settings/leaves')?>" class="nav-link <?=($main_page == 'leaves')?'active':''?>"><i class="fas fa-umbrella-beach"></i> <?=$this->lang->line('leave_type')?$this->lang->line('leave_type'):'Leave Type'?></a></li>
-                          <li class="nav-item"><a href="<?=base_url('settings/device_config')?>" class="nav-link <?=($main_page == 'device_config')?'active':''?>"><i class="fas fa-microchip"></i> <?=$this->lang->line('device_config')?$this->lang->line('device_config'):'Device Configuration'?></a></li>
-                          <li class="nav-item"><a href="<?=base_url('settings/departments')?>" class="nav-link <?=($main_page == 'departments')?'active':''?>"><i class="fas fa-building"></i> <?=$this->lang->line('departments')?$this->lang->line('departments'):'Departments'?></a></li>
-                          <li class="nav-item"><a href="<?=base_url('settings/shift')?>" class="nav-link <?=($main_page == 'shift')?'active':''?>"><i class="fas fa-clock"></i> <?=$this->lang->line('shift_schedule')?$this->lang->line('shift_schedule'):'Shift Schedule'?></a></li>
-                          <li class="nav-item"><a href="<?=base_url('settings/department')?>" class="nav-link <?=($main_page == 'department')?'active':''?>"><i class="fas fa-business-time"></i> <?=$this->lang->line('time_schedule')?$this->lang->line('time_schedule'):'Time Schedule'?></a></li>
-                          <?php if (is_module_allowed('taxes')){ ?> 
-                            <!-- <li class="nav-item"><a href="<?=base_url('settings/taxes')?>" class="nav-link <?=($main_page == 'taxes')?'active':''?>"><i class="fas fa-money-bill-alt"></i> <?=$this->lang->line('taxes')?$this->lang->line('taxes'):'Taxes'?></a></li> -->
-                          <?php } ?> 
-                          <?php if (is_module_allowed('user_permissions')){ ?> 
+                          
+                          <?php if ($this->ion_auth->in_group(1) || permissions('company_view')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/company')?>" class="nav-link <?=($main_page == 'company')?'active':''?>"><i class="fas fa-copyright"></i> <?=$this->lang->line('company')?$this->lang->line('company'):'Company'?></a></li>
+                          <?php } ?>
+
+                          <?php if ($this->ion_auth->in_group(1) || permissions('leave_type_view')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/leaves')?>" class="nav-link <?=($main_page == 'leaves')?'active':''?>"><i class="fas fa-umbrella-beach"></i> <?=$this->lang->line('leave_type')?$this->lang->line('leave_type'):'Leave Type'?></a></li>
+                          <?php } ?>
+
+                          <?php if ($this->ion_auth->in_group(1) || permissions('device_view')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/device_config')?>" class="nav-link <?=($main_page == 'device_config')?'active':''?>"><i class="fas fa-microchip"></i> <?=$this->lang->line('device_config')?$this->lang->line('device_config'):'Device Configuration'?></a></li>
+                          <?php } ?>
+
+                          <?php if ($this->ion_auth->in_group(1) || permissions('departments_view')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/departments')?>" class="nav-link <?=($main_page == 'departments')?'active':''?>"><i class="fas fa-building"></i> <?=$this->lang->line('departments')?$this->lang->line('departments'):'Departments'?></a></li>
+                          <?php } ?>
+
+                          <?php if ($this->ion_auth->in_group(1) || permissions('shift_view')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/shift')?>" class="nav-link <?=($main_page == 'shift')?'active':''?>"><i class="fas fa-clock"></i> <?=$this->lang->line('shift_schedule')?$this->lang->line('shift_schedule'):'Shift Schedule'?></a></li>
+                          <?php } ?>
+                          
+                          <?php if ($this->ion_auth->in_group(1) || permissions('time_schedule_view')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/department')?>" class="nav-link <?=($main_page == 'department')?'active':''?>"><i class="fas fa-business-time"></i> <?=$this->lang->line('time_schedule')?$this->lang->line('time_schedule'):'Time Schedule'?></a></li>
+                          <?php } ?>
+                          
+                          <!-- <?php if (is_module_allowed('taxes')){ ?> 
+                            <li class="nav-item"><a href="<?=base_url('settings/taxes')?>" class="nav-link <?=($main_page == 'taxes')?'active':''?>"><i class="fas fa-money-bill-alt"></i> <?=$this->lang->line('taxes')?$this->lang->line('taxes'):'Taxes'?></a></li>
+                          <?php } ?>  -->
+
+                          <?php if ($this->ion_auth->in_group(1) && is_module_allowed('user_permissions')){ ?> 
                              <!--<li class="nav-item"><a href="<?=base_url('settings/user-permissions')?>" class="nav-link <?=($main_page == 'permissions')?'active':''?>"><i class="fas fa-user-cog"></i> <?=$this->lang->line('user_permissions')?$this->lang->line('user_permissions'):'User Permissions'?></a></li> -->
                              
                             <li class="nav-item"><a href="<?=base_url('settings/roles')?>" class="nav-link <?=($main_page == 'roles')?'active':''?>"><i class="fas fa-user-cog"></i> <?=$this->lang->line('roles')?$this->lang->line('roles'):'Roles'?></a></li>

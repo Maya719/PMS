@@ -20,7 +20,7 @@
             </div>
             <h1>
             <?=$this->lang->line('biometric_missing')?$this->lang->line('biometric_missing'):'Biometric Request'?> 
-              <?php if (!$this->ion_auth->in_group(4)){ ?>
+              <?php if (!$this->ion_auth->in_group(4) && ($this->ion_auth->is_admin() || permissions('biometric_request_create'))){ ?>
                 <a href="#" id="modal-add-biometric" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
               <?php } ?>
             </h1>
@@ -31,7 +31,7 @@
           </div>
           <div class="section-body">
             <div class="row">
-              <?php if($this->ion_auth->is_admin()){ ?>
+              <?php if($this->ion_auth->is_admin() || permissions('biometric_request_view_all')){ ?>
                 <div class="form-group col-md-6">
                   <select class="form-control select2 biometric_missing_filter" id="biometric_missing_filter_user">
                     <option value=""><?=$this->lang->line('select_users')?$this->lang->line('select_users'):'Select Users'?></option>
@@ -86,7 +86,7 @@
                           <thead>
                             <tr>
                               <th data-field="sr_no" data-sortable="false"><?=$this->lang->line('sr_no')?$this->lang->line('sr_no'):'#'?></th>
-                              <?php if($this->ion_auth->is_admin()){ ?>
+                              <?php if($this->ion_auth->is_admin() || permissions('biometric_request_view_all')){ ?>
                                 <th data-field="employee_id" data-sortable="true" data-visible="false"><?=$this->lang->line('employee_id')?$this->lang->line('employee_id'):'Emp ID'?></th>
                                 <th data-field="user" data-sortable="false"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Employee'?></th>
                               <?php } ?>
@@ -115,7 +115,7 @@
 
 <form action="<?=base_url('biometric_missing/create')?>" method="POST" class="modal-part" id="modal-add-biometric-part" data-title="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>" data-btn="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>">
 
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->is_admin() || permissions('biometric_request_view_all')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'users'?></label>
       <select name="user_id_add" id="user_id_add" class="form-control select2">
@@ -159,7 +159,7 @@
 
   <input type="hidden" name="employee_id" id="employee_id" >
 
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->is_admin() || permissions('biometric_request_view_all')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'users'?></label>
       <select name="user_id" id="user_id" class="form-control select2">
@@ -196,7 +196,7 @@
     <textarea type="text" name="reason" id="reason" class="form-control" required=""></textarea>
   </div>
   
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->is_admin() || permissions('biometric_request_status')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('status')?$this->lang->line('status'):'Status'?></label>
       <select name="status" id="status" class="form-control select2">

@@ -49,12 +49,26 @@ class Department_model extends CI_Model
             $company_name=$department["company_name"];
             $department_name=$department["department_name"];
             $id=$department["id"];
-            
+            $action = '';
+            if($this->ion_auth->is_admin() || permissions('departments_edit')){
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-department" data-edit="'.$department['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }else{
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }
+
+            if($this->ion_auth->is_admin() || permissions('departments_delete')){
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_department" data-id="'.$department['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }else{
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }
+
+            $action = '<span class="d-flex">'.$edit_btn.''.$delete_btn.'</span>';
+
             $data[]=[
                 "s_no"=>$s_no,
                 "company_name"=>$company_name,
                 "department_name"=>$department_name,
-                'action'=>'<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-department" data-edit="'.$department['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_department" data-id="'.$department['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a></span>'
+                'action'=> $action
             ];
             $s_no++;
         }

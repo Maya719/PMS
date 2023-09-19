@@ -11,7 +11,7 @@ class Support extends CI_Controller
 
 	public function create_support_message()
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{
 			$this->form_validation->set_rules('message', 'message', 'required|xss_clean');
 			$this->form_validation->set_rules('to_id', 'ticket ID', 'trim|required|strip_tags|xss_clean|is_numeric');
@@ -55,7 +55,7 @@ class Support extends CI_Controller
 
 	public function chat()
 	{
-		if ($this->ion_auth->logged_in() && $this->uri->segment(3) && is_numeric($this->uri->segment(3)) && is_module_allowed('support') && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && $this->uri->segment(3) && is_numeric($this->uri->segment(3)) && is_module_allowed('support') && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{
 			$this->data['page_title'] = 'Support Chat - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -116,7 +116,7 @@ class Support extends CI_Controller
 
 	public function get_support_by_id()
 	{	
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{	
 			$this->form_validation->set_rules('id', 'id', 'trim|required|strip_tags|xss_clean|is_numeric');
 
@@ -140,7 +140,7 @@ class Support extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in() && is_module_allowed('support') && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && is_module_allowed('support') && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{
 			$this->data['page_title'] = 'Support - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -155,7 +155,7 @@ class Support extends CI_Controller
 
 	public function get_support()
 	{	
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{
 			return $this->support_model->get_support();
 		}else{
@@ -165,7 +165,7 @@ class Support extends CI_Controller
 
 	public function create()
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{
 			$this->form_validation->set_rules('subject', 'ticket subject', 'trim|required|strip_tags|xss_clean');
 
@@ -211,7 +211,7 @@ class Support extends CI_Controller
 
 	public function delete($id='')
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('support_view')))
 		{
 
 			if(empty($id)){

@@ -48,7 +48,7 @@ function get_attendance(){
         $order = 'ASC';
         $get = $this->input->get();
         // Check if the user is an admin
-        if($this->ion_auth->is_admin()){
+        if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
             if(isset($get['user_id']) && !empty($get['user_id'])){
                 $where = " WHERE attendance.user_id = ".$get['user_id'];
                 $where2 = " WHERE leaves.employee_id = ".$get['user_id'];
@@ -93,7 +93,7 @@ function get_attendance(){
             $shifts = $get['shifts'];
             $where .= " AND users.shift_id = '$shifts'";
         }
-        if($this->ion_auth->is_admin()){
+        if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         if (isset($get['from']) && !empty($get['from'])) {
             $where .= " AND DATE(attendance.finger) BETWEEN '".format_date($get['from'], "Y-m-d")."' AND '".format_date($get['from'], "Y-m-d")."' ";
             $where2 .= " AND leaves.starting_date <= '".format_date($get['from'], "Y-m-d")."' AND leaves.ending_date >= '".format_date($get['from'], "Y-m-d")."'";
@@ -193,7 +193,7 @@ function get_attendance(){
                         $finger .= '<br>'; // Add <br> tag if it's not the first item
                     }
                     
-                    if ($this->ion_auth->is_admin()) {
+                    if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
                         $finger .= format_date($item['finger'], "h:i A");
                     } else {
                         $finger .= format_date($item['finger'], "Y M d h:i A");
@@ -257,7 +257,7 @@ function get_attendance(){
                 $finger .= '<br><div class="text-info"><strong>Short Leave</strong></div>'; 
             }else{
                 for ($i=0; $i < $data; $i++) { 
-                    if($this->ion_auth->is_admin()){
+                    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
                         $currentDate2 = $startingDate->format('d M Y');
                         if (isset($get['from']) && !empty($get['from']) && $currentDate2 == $get['from']) {
                             $leaveArray[]=[
@@ -286,7 +286,7 @@ function get_attendance(){
         $serialNumber = 1; // Initialize the serial number variable
         // Retrieve the base URL using the base_url() function
     
-        if ($this->ion_auth->is_admin()) {
+        if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
             $conditions = "users.active = '1' AND users.finger_config = '1'";
             $id = isset($get['user_id']) && !empty($get['user_id']) ? $get['user_id'] : null;
             $department_id = isset($get['department']) && !empty($get['department']) ? $get['department'] : null;
@@ -436,7 +436,7 @@ function get_attendance(){
         $holidays = $holidayQuery->result_array();
 
         // weekend Holidays
-        if($this->ion_auth->is_admin()){
+        if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
             if (isset($get['from']) && !empty($get['from'])) {
                 $date = format_date($get['from'], "w");
                 if ($date == '0' || $date == '6') {
@@ -534,7 +534,7 @@ function get_user_attendance(){
     $conditionalDates = '';
     $user_id = 0;
     // Check if the user is an admin
-    if($this->ion_auth->is_admin()){
+    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         if(isset($get['user_id']) && !empty($get['user_id'])){
             $where = " WHERE attendance.user_id = ".$get['user_id'];
             $where2 = " WHERE leaves.employee_id = ".$get['user_id'];
@@ -901,7 +901,7 @@ function get_user_attendance(){
         $paid = $leave["paid"];
         if ($paid == 0) {
             for ($i=0; $i < $data; $i++) { 
-                if($this->ion_auth->is_admin()){
+                if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
                     $currentDate2 = $startingDate->format('d M Y');
                         if ($leave["employee_id"] == $get["user_id"]) {
                         $leaveArray[]=[
@@ -1068,7 +1068,7 @@ function get_user_attendance(){
 function get_attendance_report($get){
     
     // Check if the user is an admin
-    if ($this->ion_auth->is_admin()) {
+    if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
         if (isset($get['user_id']) && !empty($get['user_id'])) {
             $where = " WHERE attendance.user_id = " . $get['user_id'];
             $where2 = " WHERE leaves.employee_id = " . $get['user_id']." AND leaves.status='1'";
@@ -1505,7 +1505,7 @@ function get_attendance_report($get){
         $interval = $startingDate->diff($endingDate);
         $data = $interval->days + 1;
         for ($i=0; $i < $data; $i++) { 
-            if($this->ion_auth->is_admin()){
+            if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
                 $currentDate2 = $startingDate->format('d M Y');
                 $currentDate3 = $startingDate->format('Y-m-d');
                 if (isset($get['from']) && !empty($get['from']) && $currentDate2 == $get['from']) {
@@ -1549,7 +1549,7 @@ function get_attendance_report($get){
         }
     }
 
-    if($this->ion_auth->is_admin()){
+    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         $conditions = "users.finger_config = '1'";
         $id = isset($get['user_id']) && !empty($get['user_id']) ? $get['user_id'] : null;
         $department_id = isset($get['departments']) && !empty($get['departments']) ? $get['departments'] : null;
@@ -1792,7 +1792,7 @@ function get_attendance_report3($get){
     $globalToDate = '';
     $user_id = $get['user_id'];
     // Check if the user is an admin
-    if ($this->ion_auth->is_admin()) {
+    if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
         if (isset($get['user_id']) && !empty($get['user_id'])) {
             $where = " WHERE attendance.user_id = " . $get['user_id'];
             $where2 = " WHERE leaves.employee_id = ".$get['user_id'];
@@ -2165,32 +2165,27 @@ function get_attendance_report3($get){
                                 $halfDay++;
                                 $halfDayExecution = true;
                             }
-                            elseif($ending_time != $half_day_check_out && $last_check_in_time < $ending_time ){
+                            if($ending_time != $half_day_check_out && $last_check_in_time < $ending_time && $last_check_in_time > $half_day_check_out){
                                 $late_seconds = $ending_time - $last_check_in_time;
                                 $total_late_minutes = floor($late_seconds / 60); // Calculate the total minutes late (rounding down)
                                 $late += $total_late_minutes;
                                 $total_minutes += $total_late_minutes;
-                                if(!$leaveExecution){
+                                if(!$leaveExecution && !$halfDayExecution){
                                     $row[$row[$date]] = '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>';
-                                }else{
+                                }elseif($halfDayExecution || $leaveExecution){
                                     $row[$row[$date]] .= '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>';
                                 }
                             }
-                            elseif ($first_check_in_time > $starting_time && $first_check_in_time < $half_day_check_in ) { 
+                            if ($first_check_in_time > $starting_time && $first_check_in_time < $half_day_check_in ) { 
                                 $late_seconds = $first_check_in_time - $starting_time;
                                 $total_late_minutes = floor($late_seconds / 60); // Calculate the total minutes late (rounding down)
                                 $late += $total_late_minutes;
                                 $total_minutes += $total_late_minutes;
-                                if(!$leaveExecution){
+                                if(!$leaveExecution && !$halfDayExecution){
                                     $row[$row[$date]] = '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>';
-                                }else{
+                                }elseif($halfDayExecution || $leaveExecution){
                                     $row[$row[$date]] = '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>'.$row[$row[$date]];
                                 }
-                            }
-                            elseif($last_check_in_time < $half_day_check_out && !$halfDayExecution && !$leaveExecution) { // If shift ending time is later than the last check-in time
-                                $row[$row[$date]] = '<div class="text-danger"><strong>HD</strong></div>';
-                                $halfDay++;
-                                $halfDayExecution = true;
                             }
                             
                             if($total_minutes > $graceMinutes){
@@ -2325,7 +2320,7 @@ function get_attendance_report4(){
     $user_id = $this->uri->segment($this->uri->total_segments());
 
     // Check if the user is an admin
-    if ($this->ion_auth->is_admin()) {
+    if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
         if (isset($user_id) && !empty($user_id)) {
             $where = " WHERE attendance.user_id = " . $user_id;
             $where2 = " WHERE leaves.employee_id = ".$user_id;
@@ -2813,7 +2808,7 @@ function get_users_by_shifts($shifts_ids,$active){
 function get_filter_page($get){
     
     $user_id = 0;
-    if($this->ion_auth->is_admin()){
+    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         if(isset($get['user_id']) && !empty($get['user_id'])){
             $where = " WHERE attendance.user_id = ".$get['user_id'];
             $where2 = " WHERE leaves.employee_id = ".$get['user_id'];
@@ -2931,7 +2926,7 @@ function get_filter_page($get){
     $half=0;
     $allHolidayExecution = false;
     
-    if($this->ion_auth->is_admin()){
+    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         foreach($results2 as $row){
             $currentDate = strtotime($get['from']);
             $endDate = strtotime($get['from']);
@@ -3183,7 +3178,7 @@ function get_filter_page($get){
 $total_bio= 0;$bio_pending = 0;$bio_approved = 0; $bio_rejected = 0;
     $bioQuery = $this->db->query("SELECT * FROM biometric_missing");
     $results4 = $bioQuery->result_array();
-    if($this->ion_auth->is_admin()){
+    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         foreach ($results4 as $biometric) {
             if (isset($get['from']) && !empty($get['from'])) {
                 // Convert date1 to "Y-m-d" format
@@ -3249,7 +3244,7 @@ $total_bio= 0;$bio_pending = 0;$bio_approved = 0; $bio_rejected = 0;
 }
 
 function get_leaves($get){
-if($this->ion_auth->is_admin()){
+if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
     if(isset($get['user_id']) && !empty($get['user_id'])){
         $where2 = " WHERE leaves.employee_id = ".$get['user_id'];
     }else{
@@ -3279,7 +3274,7 @@ foreach ($leavesresult as $leave) {
     $interval = $startingDate->diff($endingDate);
     $data = $interval->days + 1;
     for ($i=0; $i < $data; $i++) { 
-        if($this->ion_auth->is_admin()){
+        if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
             $currentDate2 = $startingDate->format('d M Y');
             if (isset($get['from']) && !empty($get['from']) && $currentDate2 == $get['from']) {
                 $leaveArray[]=[
@@ -3426,7 +3421,7 @@ return $bulk;
         $bio_pending = 0;
         $bio_approved = 0;
         $bio_rejected = 0;
-        if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
+        if ($this->ion_auth->is_admin() || permissions('attendance_view_all') || permissions('attendance_view_all')) {
             $currentDate = new DateTime();
             $dateFormat = "Y-m-d";
             $todayDate = $currentDate->format($dateFormat);
@@ -3519,7 +3514,7 @@ if ($startingDate >= $firstDateOfCurrentMonth && $endingDate <= $currentDate) {
         }
         $startingDate->modify('+1 day');
     }
-    if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
+    if ($this->ion_auth->is_admin() || permissions('attendance_view_all') || permissions('attendance_view_all')) {
         if ($status == '1') {
             $leaves_approved++;
         }elseif ($status == '2') {
@@ -3554,7 +3549,7 @@ foreach ($BioResult as $BioRequest) {
     $Biodate = $BioRequest["date"];
     $Biostatus=$BioRequest["status"];
     $Biouser=$BioRequest["user_id"];
-    if($this->ion_auth->is_admin()){
+    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
         if ($Biostatus == '0') {
             $bio_pending++;
         }elseif ($Biostatus == '1') {
@@ -3574,7 +3569,7 @@ foreach ($BioResult as $BioRequest) {
         }
     }
 }
-if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
+if ($this->ion_auth->is_admin() || permissions('attendance_view_all') || permissions('attendance_view_all')) {
 $abs = $numRows-$present-$leaves;
 }else{
 $abs = 0;

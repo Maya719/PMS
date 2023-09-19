@@ -45,7 +45,7 @@
             </div>
             <h1>
               <?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Employees'?> 
-              <?php if(my_plan_features('users')){ if ($this->ion_auth->is_admin()){ ?> 
+              <?php if(my_plan_features('users')){ if ($this->ion_auth->is_admin() || permissions('user_create')){ ?> 
                 <a href="#" id="modal-add-user" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
               <?php } } ?> 
              <!-- <div class="btn-group">
@@ -80,7 +80,7 @@
                     <?php }else{ ?>
                       <figure class="user-avatar avatar avatar-xl rounded-circle profile-widget-picture" data-initial="<?=htmlspecialchars($system_user['short_name'])?>"></figure>
                     <?php } ?>
-                    <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)){ ?>
+                    <?php if ($this->ion_auth->is_admin() || permissions('user_view_all') || $this->ion_auth->in_group(3)){ ?>
                       <a href="#" data-edit="<?=htmlspecialchars($system_user['id'])?>" class="avatar-badge modal-edit-user text-white" title="Edit" data-toggle="tooltip"><i class="fas fa-pencil-alt"></i></a>
                     <?php } ?>
                     </span> 
@@ -146,7 +146,7 @@
     <p class="mb-1"><?= htmlspecialchars($system_user['phone']) ?></p>
     <p class="mb-1"><?= htmlspecialchars($system_user['role']) ?></p>
     <div class="d-flex w-100 justify-content-end">
-      <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)) { ?>
+      <?php if ($this->ion_auth->is_admin() || permissions('user_view_all') || $this->ion_auth->in_group(3)) { ?>
         <a href="#" data-edit="<?= htmlspecialchars($system_user['id']) ?>" class="badge badge-primary modal-edit-user"><?= ($this->lang->line('edit') ? $this->lang->line('edit') : 'Edit') ?></a>
       <?php } ?>
       <span class="badge badge-secondary ml-1"><?= htmlspecialchars($system_user['projects_count']) . ' ' . ($this->lang->line('projects') ? $this->lang->line('projects') : 'Projects') ?></span>
@@ -219,13 +219,15 @@ $user_id = $_GET['user'];
                     <th class="handle" data-field="projects_count" data-sortable="true"><?= $this->lang->line('projects')?$this->lang->line('projects'):'Projects'?></th>
                     <th data-field="tasks_count" data-sortable="true"><?= $this->lang->line('tasks')?$this->lang->line('tasks'):'Tasks'?></th>
                     <th data-field="shift_type" data-sortable="false" data-visible="true"><?=$this->lang->line('shift_type')?htmlspecialchars($this->lang->line('shift_type')):'Shift'?></th>
-                    <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)){ ?>
-                    <th data-field="action" data-sortable="false" data-visible="true"><?=$this->lang->line('action')?htmlspecialchars($this->lang->line('action')):'Action'?></th>
+                    <?php if ($this->ion_auth->is_admin() || permissions('user_view_all') || $this->ion_auth->in_group(3)){ ?>
                     <th data-field="cnic" data-sortable="false" data-visible="false"><?=$this->lang->line('cnic')?htmlspecialchars($this->lang->line('cnic')):'CNIC'?></th>
                     <th data-field="father_name" data-sortable="false" data-visible="false"><?=$this->lang->line('father_name')?htmlspecialchars($this->lang->line('father_name')):'Father Name'?></th>
                     <th data-field="department" data-sortable="false" data-visible="false"><?=$this->lang->line('department')?htmlspecialchars($this->lang->line('department')):'Department'?></th>
                     <th data-field="joining_date" data-sortable="false" data-visible="false"><?=$this->lang->line('joining_date')?htmlspecialchars($this->lang->line('joining_date')):'Joining Date'?></th>
                     <th data-field="gender" data-sortable="false" data-visible="false"><?=$this->lang->line('gender')?htmlspecialchars($this->lang->line('gender')):'Gender'?></th>
+                  <?php } ?>
+                    <?php if ($this->ion_auth->is_admin() || permissions('user_edit') || permissions('user_delete') || $this->ion_auth->in_group(3)){ ?>
+                    <th data-field="action" data-sortable="false" data-visible="true"><?=$this->lang->line('action')?htmlspecialchars($this->lang->line('action')):'Action'?></th>
                   <?php } ?>
                 </tr>
                 </div>
@@ -259,7 +261,7 @@ $user_id = $_GET['user'];
                   <th><?= $this->lang->line('status')?$this->lang->line('status'):'Status'?></th>
                   <th><?= $this->lang->line('projects')?$this->lang->line('projects'):'Projects'?></th>
                   <th><?= $this->lang->line('tasks')?$this->lang->line('tasks'):'Tasks'?></th>
-                  <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)){ ?>
+                  <?php if ($this->ion_auth->is_admin() || permissions('user_view_all') || $this->ion_auth->in_group(3)){ ?>
                     <th>Action</th>
                     <th>Performance</th>
                   <?php } ?>
@@ -278,7 +280,7 @@ $user_id = $_GET['user'];
                   <td><?= htmlspecialchars($system_user['active'])==1?($this->lang->line('active')?$this->lang->line('active'):'Active'):($this->lang->line('deactive')?$this->lang->line('deactive'):'Deactive')?></td>
                   <td><span class="badge badge-secondary"><?= htmlspecialchars($system_user['projects_count'])?></span></td>
                   <td><span class="badge badge-secondary"><?= htmlspecialchars($system_user['tasks_count'])?></span></td>
-                  <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)){ ?>
+                  <?php if ($this->ion_auth->is_admin() || permissions('user_view_all') || $this->ion_auth->in_group(3)){ ?>
                     <td><a href="#" data-edit="<?= htmlspecialchars($system_user['id'])?>" class="modal-edit-user" title="Edit" data-toggle="tooltip"><i class="fas fa-pencil-alt"></i></a></td>
                     <td><?= htmlspecialchars($system_user['performance'])?></td>
                   <?php } ?>
