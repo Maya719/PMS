@@ -146,7 +146,6 @@ class Settings extends CI_Controller
 			redirect('auth', 'refresh');
 		}
 	}
-
 	
 	public function get_taxes($id = '')
 	{
@@ -255,7 +254,7 @@ class Settings extends CI_Controller
 
 	public function company()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(1))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('company_view')))
 		{
 			$this->data['page_title'] = 'Company Settings - '.company_name();
 			$this->data['main_page'] = 'company';
@@ -269,7 +268,7 @@ class Settings extends CI_Controller
 
 	public function save_company_setting()
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4) || permissions('company_view')))
 		{
 			if($this->ion_auth->in_group(4)){
 				$setting_type = 'company_'.$this->session->userdata('user_id');
@@ -320,9 +319,8 @@ class Settings extends CI_Controller
 	
 	public function shift()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(1))
+		if ($this->ion_auth->logged_in() &&  ($this->ion_auth->in_group(1) || permissions('shift_view')))
 		{
-
 			$this->data['page_title'] = 'Shift Settings - '.company_name();
 			$this->data['main_page'] = 'shift';
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -340,9 +338,8 @@ class Settings extends CI_Controller
 
 	public function departments()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(1))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('departments_view')))
 		{
-
 			$this->data['page_title'] = 'Department Settings - '.company_name();
 			$this->data['main_page'] = 'departments';
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -357,9 +354,8 @@ class Settings extends CI_Controller
 
 	public function device_config()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(1))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('device_view')))
 		{
-
 			$this->data['page_title'] = 'Device Settings - '.company_name();
 			$this->data['main_page'] = 'device_config';
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -377,9 +373,8 @@ class Settings extends CI_Controller
 
 	public function department()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(1))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('time_schedule_view')))
 		{
-
 			$this->data['page_title'] = 'Timing Settings - '.company_name();
 			$this->data['main_page'] = 'department';
 			$query = $this->db->get('shift');
@@ -391,61 +386,61 @@ class Settings extends CI_Controller
 		}
 	}
 
-	public function save_department_setting()
-	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4)))
-		{
-			if($this->ion_auth->in_group(4)){
-				$setting_type = 'department_';
-			}else{
-				$setting_type = 'department_';
-			}
+	// public function save_department_setting()
+	// {
+	// 	if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4)))
+	// 	{
+	// 		if($this->ion_auth->in_group(4)){
+	// 			$setting_type = 'department_';
+	// 		}else{
+	// 			$setting_type = 'department_';
+	// 		}
 			
-			$this->form_validation->set_rules('half_day_check_in', 'Check In', 'trim|required|strip_tags|xss_clean');
-			$this->form_validation->set_rules('half_day_check_out', 'Check Out', 'trim|required|strip_tags|xss_clean');
-			$this->form_validation->set_rules('type', 'Shift Type', 'trim|required|strip_tags|xss_clean');
+	// 		$this->form_validation->set_rules('half_day_check_in', 'Check In', 'trim|required|strip_tags|xss_clean');
+	// 		$this->form_validation->set_rules('half_day_check_out', 'Check Out', 'trim|required|strip_tags|xss_clean');
+	// 		$this->form_validation->set_rules('type', 'Shift Type', 'trim|required|strip_tags|xss_clean');
 
-			if($this->form_validation->run() == TRUE){
+	// 		if($this->form_validation->run() == TRUE){
 
-				$shift_id = $this->input->post('type');
-				$setting_type = 'department_'.$shift_id;
+	// 			$shift_id = $this->input->post('type');
+	// 			$setting_type = 'department_'.$shift_id;
 
-				$data_json = array(
-						'half_day_check_in' => $this->input->post('half_day_check_in'),
-						'half_day_check_out' => $this->input->post('half_day_check_out'),
-				);
+	// 			$data_json = array(
+	// 					'half_day_check_in' => $this->input->post('half_day_check_in'),
+	// 					'half_day_check_out' => $this->input->post('half_day_check_out'),
+	// 			);
 
-				$data = array(
-					'value' => json_encode($data_json)
-				);
+	// 			$data = array(
+	// 				'value' => json_encode($data_json)
+	// 			);
 
-				if($this->settings_model->save_settings($setting_type,$data)){
-					$this->data['error'] = false;
-					$this->data['data'] = $data_json;
-					$this->data['message'] = $this->lang->line('company_setting_saved')?$this->lang->line('company_setting_saved'):"Department Setting Saved.";
-					echo json_encode($this->data); 
-				}else{
-					$this->data['error'] = true;
-					$this->data['message'] = $this->lang->line('something_wrong_try_again')?$this->lang->line('something_wrong_try_again'):"Something wrong! Try again.";
-					echo json_encode($this->data);
-				}
-			}else{
-				$this->data['error'] = true;
-				$this->data['message'] = validation_errors();
-				echo json_encode($this->data); 
-			}
+	// 			if($this->settings_model->save_settings($setting_type,$data)){
+	// 				$this->data['error'] = false;
+	// 				$this->data['data'] = $data_json;
+	// 				$this->data['message'] = $this->lang->line('company_setting_saved')?$this->lang->line('company_setting_saved'):"Department Setting Saved.";
+	// 				echo json_encode($this->data); 
+	// 			}else{
+	// 				$this->data['error'] = true;
+	// 				$this->data['message'] = $this->lang->line('something_wrong_try_again')?$this->lang->line('something_wrong_try_again'):"Something wrong! Try again.";
+	// 				echo json_encode($this->data);
+	// 			}
+	// 		}else{
+	// 			$this->data['error'] = true;
+	// 			$this->data['message'] = validation_errors();
+	// 			echo json_encode($this->data); 
+	// 		}
 
-		}else{
+	// 	}else{
 			
-			$this->data['error'] = true;
-			$this->data['message'] = $this->lang->line('access_denied')?$this->lang->line('access_denied'):"Access Denied";
-			echo json_encode($this->data); 
-		}
-	}
+	// 		$this->data['error'] = true;
+	// 		$this->data['message'] = $this->lang->line('access_denied')?$this->lang->line('access_denied'):"Access Denied";
+	// 		echo json_encode($this->data); 
+	// 	}
+	// }
 
     public function save_grace_minutes_setting()
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4) || permissions('time_schedule_view')))
 		{
 			if($this->ion_auth->in_group(4)){
 				$setting_type = 'grace_minutes_';
@@ -513,7 +508,7 @@ class Settings extends CI_Controller
 	
 	public function get_grace_minutes()
 	{	
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(4) || permissions('time_schedule_view')))
 		{
 			$report = $this->settings_model->get_grace_minutes();
 			echo json_encode($report);	
@@ -524,7 +519,7 @@ class Settings extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('general_view')))
 		{
 			$this->data['page_title'] = 'Settings - '.company_name();
 			$this->data['main_page'] = 'general';
@@ -1335,7 +1330,7 @@ class Settings extends CI_Controller
 
 	public function save_general_setting()
 	{
-		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('general_view')))
 		{
 
 			$setting_type = 'general';
@@ -1488,7 +1483,7 @@ class Settings extends CI_Controller
 				$this->data['message'] = $this->lang->line('access_denied')?$this->lang->line('access_denied'):"Access Denied";
 				echo json_encode($this->data); 
 			}
-		}
+	}
 		
 	public function roles()
 	{
@@ -1625,7 +1620,6 @@ class Settings extends CI_Controller
 		
 	}
 
-
 	public function roles_delete($id='')
 	{
 		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin() )
@@ -1745,7 +1739,7 @@ class Settings extends CI_Controller
 	
 	public function leaves()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->in_group(1))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leave_type_view')))
 		{
 
 			$this->data['page_title'] = 'Leaves Settings - '.company_name();
@@ -1909,8 +1903,6 @@ class Settings extends CI_Controller
 			echo json_encode($this->data);
 		}
 	}
-	
-	
 	
 	}
 
