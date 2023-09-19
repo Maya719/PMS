@@ -11,7 +11,7 @@ class Leaves extends CI_Controller
 
 	public function delete($id='')
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{
 
 			if(empty($id)){
@@ -42,7 +42,7 @@ class Leaves extends CI_Controller
 
 	public function edit()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{
 			$this->form_validation->set_rules('update_id', 'Leave ID', 'trim|required|strip_tags|xss_clean|is_numeric');
 			$this->form_validation->set_rules('leave_reason', 'Leave Reason', 'trim|required|strip_tags|xss_clean');
@@ -319,7 +319,7 @@ class Leaves extends CI_Controller
 
 	public function get_leaves_by_id()
 	{	
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{	
 			$this->form_validation->set_rules('id', 'id', 'trim|required|strip_tags|xss_clean|is_numeric');
 
@@ -343,7 +343,7 @@ class Leaves extends CI_Controller
 
 	public function get_leaves()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{
 			return $this->leaves_model->get_leaves();
 		}else{
@@ -355,7 +355,7 @@ class Leaves extends CI_Controller
 
 	public function create()
 	{
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{
 			$this->form_validation->set_rules('starting_date', 'Starting Date', 'trim|strip_tags|xss_clean');
 			$this->form_validation->set_rules('ending_date', 'Ending Date', 'trim|strip_tags|xss_clean');
@@ -646,7 +646,7 @@ class Leaves extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in()  && is_module_allowed('leaves') && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in()  && is_module_allowed('leaves') && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{
 			$this->data['page_title'] = 'Leaves - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -664,11 +664,11 @@ class Leaves extends CI_Controller
 
 	public function get_leaves_count()
 	{	
-		if ($this->ion_auth->logged_in() && !$this->ion_auth->in_group(3) && !$this->ion_auth->in_group(4))
+		if ($this->ion_auth->logged_in() && ($this->ion_auth->in_group(1) || permissions('leaves_view')))
 		{
 			$user_id = $this->input->post('user_id');
 			$type = $this->input->post('type');
-			if($this->ion_auth->is_admin()){
+			if($this->ion_auth->is_admin() || permissions('leaves_view_all')){
 				$result=[
 					'user_id'=>$user_id,
 					'type'=>$type,
