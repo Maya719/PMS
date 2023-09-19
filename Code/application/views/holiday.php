@@ -33,7 +33,7 @@
             </div>
             <h1>
             <?=$this->lang->line('holiday')?$this->lang->line('holiday'):'Plan Holiday'?> 
-              <?php if (!$this->ion_auth->in_group(4)){ ?>
+              <?php if (!$this->ion_auth->in_group(4) && ($this->ion_auth->is_admin() || permissions('plan_holiday_create'))){ ?>
                 <a href="#" id="modal-add-leaves" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
               <?php } ?>
             </h1>
