@@ -131,7 +131,7 @@
       <?php } ?>
 
     </div>
-    <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3)){ ?>
+    <?php if ($this->ion_auth->is_admin() || $this->ion_auth->in_group(3) || permissions('general_view')){ ?>
       <div class="card-footer bg-whitesmoke text-md-right">
         <button class="btn btn-primary savebtn"><?=$this->lang->line('save_changes')?$this->lang->line('save_changes'):'Save Changes'?></button>
       </div>
