@@ -68,13 +68,28 @@ class Device_config_model extends CI_Model
                 $users = '<span class="text-muted">No assigned members</span>';
             }
             
+            $action = '';
+            if($this->ion_auth->is_admin() || permissions('device_edit')){
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-device" data-edit="'.$device['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }else{
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }
+
+            if($this->ion_auth->is_admin() || permissions('device_delete')){
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_device" data-id="'.$device['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }else{
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }
+
+            $action = '<span class="d-flex">'.$edit_btn.''.$delete_btn.'</span>';
+            
             $data[]=[
                 "s_no"=>$s_no,
                 "device_name"=>$device_name,
                 "users"=>$users,
                 "device_ip"=>$device_ip,
                 "port"=>$port,
-                'action'=>'<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-device" data-edit="'.$device['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_device" data-id="'.$device['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a></span>'
+                'action'=> $action 
             ];
             $s_no++;
         }
