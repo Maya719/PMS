@@ -259,11 +259,19 @@ class Projects extends CI_Controller
 		{
 			$this->data['page_title'] = 'Calendar - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
-			$this->data['system_users'] = $this->ion_auth->users(array(1,2))->result();
+			if ($this->ion_auth->is_admin() || permissions('view_project_all')) {
+				$this->data['system_users'] = $this->ion_auth->members()->result();
+			}elseif (permissions('project_view_selected')) {
+				$selected = selected_users();
+				foreach ($selected as $user_id) {
+					$users[]= $this->ion_auth->user($user_id)->row();				
+				}
+				$this->data['system_users'] = $users;
+			}
 			$this->data['project_id'] = $project_id = $this->uri->segment(3);
 
 			$this->data['project_status'] = project_status();
-			$this->data['system_clients'] = $this->ion_auth->users(4)->result();
+			$this->data['system_clients'] = $this->ion_auth->client_users()->result();
 
 			if($project_id && $this->ion_auth->in_group(3) && !is_my_project($project_id)){
 				redirect('projects/calendar', 'refresh');
@@ -283,7 +291,7 @@ class Projects extends CI_Controller
 				$filter_type = 'sortby';
 			}
 
-			if($this->ion_auth->is_admin()){
+			if($this->ion_auth->is_admin() || permissions('project_view_all') || permissions('project_view_selected')){
 					$tasks = $this->projects_model->get_tasks();
 
 					$projects = $this->projects_model->get_projects('',$project_id, '', '', $filter_type, $filter);
@@ -1422,7 +1430,7 @@ class Projects extends CI_Controller
 			$this->data['task_status'] = task_status();
 			$this->data['task_priorities'] = priorities();
 
-			if($this->ion_auth->is_admin()){
+			if($this->ion_auth->is_admin() || permissions('project_view_all')){
 				$this->data['projects'] = $this->projects_model->get_projects();
 			}else{
 				$this->data['projects'] = $this->projects_model->get_projects($this->session->userdata('user_id'));
@@ -1957,7 +1965,7 @@ class Projects extends CI_Controller
 			$this->data['system_users'] = $userRow;
 			$this->data['project_id'] = $project_id = $this->uri->segment(3);
 
-			if($project_id && $this->ion_auth->in_group(4)){
+			if($project_id && is_client()){
 				if(!is_my_project($project_id)){
 					redirect('projects/tasks', 'refresh');
 				}
@@ -1975,6 +1983,22 @@ class Projects extends CI_Controller
 			$this->data['task_priorities'] = priorities();
 
 			if($this->ion_auth->is_admin() || permissions('task_view_all')){
+				if(isset($_GET['user']) && !empty($_GET['user']) && is_numeric($_GET['user'])){
+					$this->data['tasks'] = $this->projects_model->get_tasks($_GET['user'],'',$project_id);
+					$this->data['projects'] = $this->projects_model->get_projects($_GET['user']);
+				}elseif(isset($_GET['search']) && !empty($_GET['search'])){
+					$this->data['tasks'] = $this->projects_model->get_tasks('','',$project_id,$_GET['search']);
+				}elseif(isset($_GET['sortby']) && !empty($_GET['sortby'])){
+					$this->data['tasks'] = $this->projects_model->get_tasks('','',$project_id,'',$_GET['sortby']);
+				}elseif(isset($_GET['priority']) && !empty($_GET['priority']) && is_numeric($_GET['priority'])){
+					$this->data['tasks'] = $this->projects_model->get_tasks('','',$project_id,'','',$_GET['priority']);
+				}elseif(isset($_GET['upcoming']) && !empty($_GET['upcoming'])){
+					$this->data['tasks'] = $this->projects_model->get_tasks('','',$project_id,'','','', $_GET['upcoming']);
+				}else{
+					$this->data['tasks'] = $this->projects_model->get_tasks('','',$project_id);
+				}
+				$this->data['projects'] = $this->projects_model->get_projects();
+			}elseif(permissions('project_view_selected')){
 				if(isset($_GET['user']) && !empty($_GET['user']) && is_numeric($_GET['user'])){
 					$this->data['tasks'] = $this->projects_model->get_tasks($_GET['user'],'',$project_id);
 					$this->data['projects'] = $this->projects_model->get_projects($_GET['user']);

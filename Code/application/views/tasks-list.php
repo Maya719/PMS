@@ -30,7 +30,6 @@
           </div>
           <div class="section-body">
             <div class="row" id="tool">
-
             
               <div class="form-group col-md-6">
                 <select class="form-control select2" id="task_filters_project">
@@ -41,7 +40,7 @@
                 </select>
               </div>
 
-              <?php if($this->ion_auth->is_admin()){ ?>
+              <?php if($this->ion_auth->is_admin() || permissions('project_view_all') || permissions('project_view_selected')){ ?>
                 <div class="form-group col-md-3">
                   <select class="form-control select2" id="task_filters_user">
                     <option value=""><?=$this->lang->line('select_users')?$this->lang->line('select_users'):'Select Users'?></option>
@@ -52,7 +51,7 @@
                 </div>
               <?php } ?>
               
-              <div class="form-group col-md-<?=$this->ion_auth->is_admin()?'3':'6'?>">
+              <div class="form-group col-md-<?=($this->ion_auth->is_admin() || permissions('project_view_all') || permissions('project_view_selected'))?'3':'6'?>">
                 <select class="form-control select2" id="task_filters_status">
                   <option value=""><?=$this->lang->line('select_status')?htmlspecialchars($this->lang->line('select_status')):'Select Status'?></option>
                   <?php foreach($task_status as $status){ ?>

@@ -59,7 +59,7 @@
                 </div>
               </div>
 
-              <?php if($this->ion_auth->is_admin()){ ?>
+              <?php if($this->ion_auth->is_admin() || permissions('project_view_all') || permissions('project_view_selected')){ ?>
                 <div class="form-group col-md-3">
                   <select class="form-control select2 project_filter">
                     <option value="<?=base_url("projects/tasks")?>"><?=$this->lang->line('select_users')?$this->lang->line('select_users'):'Select Users'?></option>
@@ -94,11 +94,9 @@
               <div class="form-group col-md-3">
                 <select class="form-control select2 project_filter">
                   <option value="<?=base_url("projects/tasks")?>"><?=$this->lang->line('select_priority')?htmlspecialchars($this->lang->line('select_priority')):'Select Priority'?></option>
-
                   <?php foreach($task_priorities as $priority){ ?>
                     <option value="<?=base_url("projects/tasks?priority=".htmlspecialchars($priority['id']))?>" <?=(isset($_GET['priority']) && !empty($_GET['priority']) && is_numeric($_GET['priority']) && $_GET['priority'] == $priority['id'])?"selected":""?>><?=htmlspecialchars($priority['title'])?></option>
                   <?php } ?>
-
                 </select>
               </div>
 
@@ -344,7 +342,6 @@
                       <th data-field="file_type" data-sortable="true"><?=$this->lang->line('file_type')?$this->lang->line('file_type'):'File Type'?></th>
                       <th data-field="file_size" data-sortable="true"><?=$this->lang->line('size')?$this->lang->line('size'):'Size'?></th>
                       <th data-field="action" data-sortable="false"><?=$this->lang->line('action')?$this->lang->line('action'):'Action'?></th>
-                      
                       
                     </tr>
                   </thead>
