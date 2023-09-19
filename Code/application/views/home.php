@@ -258,8 +258,9 @@
                         $pendingT = get_count('t.id','tasks t LEFT JOIN projects p on t.project_id = p.id','(t.status=1 OR t.status=2 OR t.status=3) AND p.client_id = '.htmlspecialchars($this->session->userdata('user_id')));
                       }elseif(permissions('project_view_selected')){
                         $selectedUsers = selected_users();
-                        $userIds = implode(',', $selectedUsers);
-                        $pendingT = get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id = tu.task_id', '(status = 1 OR status = 2 OR status = 3) AND tu.user_id IN (' . htmlspecialchars($userIds) . ')');
+                        foreach ($selectedUsers as $selectedUser) {
+                          $pendingT =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','(status=1 OR status=2 OR status=3) AND tu.user_id='.htmlspecialchars($selectedUser));
+                        }
                       }else{
                         $pendingT =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','(status=1 OR status=2 OR status=3) AND tu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
                       }
@@ -269,12 +270,9 @@
                         $completedT = get_count('t.id','tasks t LEFT JOIN projects p on t.project_id = p.id','t.status=4 AND p.client_id = '.htmlspecialchars($this->session->userdata('user_id')));
                       }elseif(permissions('project_view_selected')){
                         $selectedUsers = selected_users();
-                        $userIds = implode(',', $selectedUsers);
-                        $completedT = get_count(
-                            't.id',
-                            'tasks t LEFT JOIN task_users tu ON t.id = tu.task_id',
-                            'status = 4 AND tu.user_id IN (' . htmlspecialchars($userIds) . ')'
-                        );
+                        foreach ($selectedUsers as $selectedUser) {
+                          $completedT +=  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status=4 AND tu.user_id='.$selectedUser);
+                        }
                       }else{
                         $completedT =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status=4 AND tu.user_id='.$this->session->userdata('user_id'));
                       }
@@ -432,8 +430,10 @@
       $tmpPV[] =  get_count('id','projects','client_id='.htmlspecialchars($this->session->userdata('user_id')).' AND status='.htmlspecialchars($project_title['id']));
     }elseif(permissions('project_view_selected')){
       $selectedUsers = selected_users();
-      $userIds = implode(',', $selectedUsers); // Convert the array to a comma-separated string
-      $tmpPV[] =  get_count('p.id', 'projects p LEFT JOIN project_users pu ON p.id = pu.project_id', 'status = ' . $project_title['id'] . ' AND pu.user_id IN (' . htmlspecialchars($userIds) . ')');
+      foreach ($selectedUsers as $selectedUser) {
+        $chartSelector += get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','status='.$project_title['id'].' AND pu.user_id='.htmlspecialchars($selectedUser));
+      }
+      $tmpPV[] =  $chartSelector;
     }else{
       $tmpPV[] =  get_count('p.id','projects p LEFT JOIN project_users pu ON p.id=pu.project_id','status='.$project_title['id'].' AND pu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
     }
@@ -445,10 +445,6 @@
       $tmpTV[] =  get_count('id','tasks','status='.htmlspecialchars($task_title['id']).' AND saas_id='.htmlspecialchars($this->session->userdata('saas_id')));
     }elseif(is_client()){
       $tmpTV[] =  get_count('t.id','tasks t LEFT JOIN projects p on t.project_id = p.id','p.client_id = '.htmlspecialchars($this->session->userdata('user_id')).' AND t.status = '.htmlspecialchars($task_title['id']));
-    }elseif(permissions('project_view_selected')){
-      $selectedUsers = selected_users();
-      $userIds = implode(',', $selectedUsers); // Convert the array to a comma-separated string
-      $tmpTV[] =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status='.htmlspecialchars($task_title['id']).' AND tu.user_id IN (' . htmlspecialchars($userIds) . ')');
     }else{
       $tmpTV[] =  get_count('t.id','tasks t LEFT JOIN task_users tu ON t.id=tu.task_id','status='.htmlspecialchars($task_title['id']).' AND tu.user_id='.htmlspecialchars($this->session->userdata('user_id')));
     }
