@@ -16,13 +16,8 @@ class Holiday_model extends CI_Model
             return false;
     }
 
-    function get_leaves_by_id($id){
-        $where = "";
-        if($this->ion_auth->is_admin()){
-            $where .= " WHERE id = $id ";
-        }else{
-            $where .= " AND id = $id ";
-        }
+    function get_holiday_by_id($id){
+        $where = " WHERE id = $id ";
 
         $query = $this->db->query("SELECT * FROM holiday ".$where);
     
@@ -118,14 +113,29 @@ class Holiday_model extends CI_Model
                     //     </figure>';
                     // }
                     if (!empty($first_name) && !empty($last_name)) {
-    $profile_html .= '<span>' . $first_name . ' ' . $last_name . '</span>'.'<br>';
-}
+                        $profile_html .= '<span>' . $first_name . ' ' . $last_name . '</span>'.'<br>';
+                    }
 
 
 
                 }
                 $users = $profile_html;
             }
+
+            $action = '';
+            if($this->ion_auth->is_admin() || permissions('plan_holiday_edit')){
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-holiday" data-edit="'.$holiday['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }else{
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }
+
+            if($this->ion_auth->is_admin() || permissions('plan_holiday_delete')){
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_holiday" data-id="'.$holiday['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }else{
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }
+
+            $action = '<span class="d-flex">'.$edit_btn.''.$delete_btn.'</span>';
 
             $data[]=[
                 's_no'=>$s_no,
@@ -135,7 +145,7 @@ class Holiday_model extends CI_Model
                 'remarks'=>$remarks,
                 'apply_on'=>$users,
                 'type'=>$type,
-                'action'=>'<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-holiday" data-edit="'.$holiday['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_holiday" data-id="'.$holiday['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a></span>'
+                'action'=> $action
             ];
             $s_no++;
         }
@@ -170,70 +180,6 @@ class Holiday_model extends CI_Model
             return false;
         }
     }
-    
-    function get_leaves_count($result){
-        $type = $result['type'];
-        $user_id = isset($result['user_id']) ? $result['user_id'] : $this->session->userdata('user_id');
-            $total_leaves = 0;
-        switch ($type) {
-            case 0: // Casual Leave
-                $total_leaves = 10;
-                break;
-            case 1: // Marriage Leave
-                $total_leaves = 5;
-                break;
-            case 2: // Medical Leave
-                $total_leaves = 8;
-                break;
-            case 3: // Maternity Leave
-                $total_leaves = 60;
-                break;
-            default:
-                $total_leaves = 0;
-                break;
-        }
-
-        $from = date('Y-01-01');
-        $to = date('Y-12-31');
-        
-        $this->db->select('SUM(CASE 
-            WHEN leave_duration LIKE "%Full%" THEN DATEDIFF(ending_date, starting_date) + 1
-            WHEN leave_duration LIKE "%Half%" THEN (DATEDIFF(ending_date, starting_date) + 1) * 0.5
-            ELSE 0
-        END) as consumed_leaves');
-        $this->db->from('leaves');
-        $this->db->where('user_id', $user_id);
-        $this->db->where('type', $type);
-        $this->db->where('status', '1');
-        $this->db->where('starting_date >=', $from);
-        $this->db->where('starting_date <=', $to);
-        $this->db->group_start();
-        $this->db->like('leave_duration', 'Full', 'both');
-        $this->db->or_like('leave_duration', 'Half', 'both');
-        $this->db->group_end();
-        $query = $this->db->get();
-
-        $sqlQuery = $this->db->last_query();
-    
-        if ($query->num_rows() > 0) {
-            $row = $query->row();
-            $consumed_leaves = ($row->consumed_leaves !== null) ? $row->consumed_leaves : 0;
-        } else {
-            $consumed_leaves = 0;
-        }
-        $consumed_leaves = rtrim($consumed_leaves, '.0');
-        $consumed_leaves = (int)$consumed_leaves;
-        $remaining_leaves = $total_leaves - $consumed_leaves;
-    
-        return array(
-            'query' => $sqlQuery,
-            'total_leaves' => $total_leaves,
-            'consumed_leaves' => $consumed_leaves,
-            'remaining_leaves' => $remaining_leaves
-        );
-    }
-
-
 
 }
 
