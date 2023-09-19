@@ -104,18 +104,16 @@
             </div>
             <h1>
               <?php
-                if(!$this->ion_auth->is_admin()){ ?>
-                 
-              <?=$this->lang->line('attendance')?htmlspecialchars($this->lang->line('attendance')):'Attendance'?> 
-              <div class="btn-group">
-                <a href="#" class="btn btn-sm btn-primary"><?=$this->lang->line('report')?htmlspecialchars($this->lang->line('report')):'Report View'?></a>
-                <a href="<?=base_url('attendance')?>" class="btn btn-sm "><?=$this->lang->line('list_view')?htmlspecialchars($this->lang->line('list_view')):'List View'?></a>
-              </div>
-              <?php
-                }else{?>
-                 
+                if($this->ion_auth->is_admin() || permissions('attendance_view_all')){ ?>
                   <?=$this->lang->line('attendance')?htmlspecialchars($this->lang->line('attendance')):'User Attendance - '?> 
                   <?= htmlspecialchars($name) ?>
+                  <?php
+                }else{?>
+                  <?=$this->lang->line('attendance')?htmlspecialchars($this->lang->line('attendance')):'Attendance'?> 
+                  <div class="btn-group">
+                    <a href="#" class="btn btn-sm btn-primary"><?=$this->lang->line('report')?htmlspecialchars($this->lang->line('report')):'Report View'?></a>
+                    <a href="<?=base_url('attendance')?>" class="btn btn-sm "><?=$this->lang->line('list_view')?htmlspecialchars($this->lang->line('list_view')):'List View'?></a>
+                  </div>
                   <?php
                     }
               ?>
