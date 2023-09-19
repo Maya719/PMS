@@ -10,7 +10,7 @@
                         </div>
                         <div class="form-group mt-2 col-md-12">
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="checkbox" id="team_members_and_client_can_chat" name="team_members_and_client_can_chat" value="<?=(isset($permissions->team_members_and_client_can_chat) && !empty($permissions->team_members_and_client_can_chat))?$permissions->team_members_and_client_can_chat:0?>" <?=(isset($permissions->team_members_and_client_can_chat) && !empty($permissions->team_members_and_client_can_chat) && $permissions->team_members_and_client_can_chat == 1)?'checked':''?>>
+                              <input class="form-check-input" type="checkbox" id="team_members_and_client_can_chat" name="team_members_and_client_can_chat" value="<?=(isset($members_permissions->team_members_and_client_can_chat) && !empty($members_permissions->team_members_and_client_can_chat))?$members_permissions->team_members_and_client_can_chat:0?>" <?=(isset($members_permissions->team_members_and_client_can_chat) && !empty($members_permissions->team_members_and_client_can_chat) && $members_permissions->team_members_and_client_can_chat == 1)?'checked':''?>>
                               <label class="form-check-label" for="team_members_and_client_can_chat"><?=$this->lang->line('team_embers_and_client_can_chat')?$this->lang->line('team_embers_and_client_can_chat'):'Team Members and Client can chat?'?></label>
                             </div>
                         </div>
@@ -267,9 +267,93 @@
                                   </div> 
                                 <?php endif; ?>
 
+                                <?php if (strpos($role['permissions'], 'gantt') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('gantt')?$this->lang->line('gantt'):'Gantt'?></label>
+
+                                      <?php if (strpos($role['permissions'], 'gantt_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_gantt_view" name="<?= $role['name'] ?>_gantt_view" value="<?=(isset($permissions->gantt_view) && !empty($permissions->gantt_view))?$permissions->gantt_view:0?>" <?=(isset($permissions->gantt_view) && !empty($permissions->gantt_view) && $permissions->gantt_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_gantt_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+
+                                      <?php if (strpos($role['permissions'], 'gantt_edit ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_gantt_edit" name="<?= $role['name'] ?>_gantt_edit" value="<?=(isset($permissions->gantt_edit) && !empty($permissions->gantt_edit))?$permissions->gantt_edit:0?>" <?=(isset($permissions->gantt_edit) && !empty($permissions->gantt_edit) && $permissions->gantt_edit == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_gantt_edit"><?=$this->lang->line('drag_date')?htmlspecialchars($this->lang->line('drag_date')):'Drag Date'?> / <?=$this->lang->line('edit')?$this->lang->line('edit'):'Edit'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                  </div>
+                                <?php endif; ?>
+
+                                <?php if (strpos($role['permissions'], 'user') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Team Members'?> 
+                                        <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" data-original-title="<?=$this->lang->line('only_admin_have_permission_to_add_edit_and_delete_users_you_can_make_any_user_as_admin_they_will_get_all_this_permissions_by_default')?$this->lang->line('only_admin_have_permission_to_add_edit_and_delete_users_you_can_make_any_user_as_admin_they_will_get_all_this_permissions_by_default'):"Only admin have permission to add, edit and delete users. You can make any user as admin they will get all this permissions by default."?>"></i>
+                                      </label>
+                                      
+                                      <?php if (strpos($role['permissions'], 'user_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_view" name="<?= $role['name'] ?>_user_view" value="<?=(isset($permissions->user_view) && !empty($permissions->user_view))?$permissions->user_view:0?>" <?=(isset($permissions->user_view) && !empty($permissions->user_view) && $permissions->user_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_view"><?=$this->lang->line('view')?$this->lang->line('view'):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+
+                                      <?php if (strpos($role['permissions'], 'user_create ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_create" name="<?= $role['name'] ?>_user_create" value="<?=(isset($permissions->user_create) && !empty($permissions->user_create))?$permissions->user_create:0?>" <?=(isset($permissions->user_create) && !empty($permissions->user_create) && $permissions->user_create == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_create"><?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                      
+                                      <?php if (strpos($role['permissions'], 'user_edit ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_edit" name="<?= $role['name'] ?>_user_edit" value="<?=(isset($permissions->user_edit) && !empty($permissions->user_edit))?$permissions->user_edit:0?>" <?=(isset($permissions->user_edit) && !empty($permissions->user_edit) && $permissions->user_edit == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_edit"><?=$this->lang->line('edit')?$this->lang->line('edit'):'Edit'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                      
+                                      <?php if (strpos($role['permissions'], 'user_delete ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_delete" name="<?= $role['name'] ?>_user_delete" value="<?=(isset($permissions->user_delete) && !empty($permissions->user_delete))?$permissions->user_delete:0?>" <?=(isset($permissions->user_delete) && !empty($permissions->user_delete) && $permissions->user_delete == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_delete"><?=$this->lang->line('delete')?$this->lang->line('delete'):'Delete'?></label>
+                                        </div>
+                                      <?php endif; ?>
+
+                                      <?php if (strpos($role['permissions'], 'user_view_all ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_view_all" name="<?= $role['name'] ?>_user_view_all" value="<?=(isset($permissions->user_view_all) && !empty($permissions->user_view_all))?$permissions->user_view_all:0?>" <?=(isset($permissions->user_view_all) && !empty($permissions->user_view_all) && $permissions->user_view_all == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_view_all"><?=$this->lang->line('view_all_user')?$this->lang->line('view_all_user'):'View All user'?></label>
+                                        </div>
+                                      <?php endif; ?>
+
+                                      <?php if (strpos($role['permissions'], 'user_view_selected ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_view_selected" name="<?= $role['name'] ?>_user_view_selected" value="<?=(isset($permissions->user_view_selected) && !empty($permissions->user_view_selected))?$permissions->user_view_selected:0?>" <?=(isset($permissions->user_view_selected) && !empty($permissions->user_view_selected) && $permissions->user_view_selected == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_view_selected"><?=$this->lang->line('view_selected_user')?$this->lang->line('view_selected_user'):'View Selected Users'?></label>
+                                        </div>
+                                      <?php endif; ?>
+
+                                  </div>
+                                <?php endif; ?>
+
+                                <?php if (strpos($role['permissions'], 'reports') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('reports')?$this->lang->line('reports'):'Reports'?> </label>
+
+                                      <?php if (strpos($role['permissions'], 'reports_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_reports_view" name="<?= $role['name'] ?>_reports_view" value="<?=(isset($permissions->reports_view) && !empty($permissions->reports_view))?$permissions->reports_view:0?>" <?=(isset($permissions->reports_view) && !empty($permissions->reports_view) && $permissions->reports_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_reports_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                  </div>
+                                <?php endif; ?>
+
                                 <?php if (strpos($role['permissions'], 'device') !== false): ?>
                                   <div class="form-group col-md-12">
-                                      <label class="d-block"><?=$this->lang->line('device')?$this->lang->line('device'):'Device Config'?></label>
+                                      <label class="d-block"><?=$this->lang->line('device')?$this->lang->line('device'):'Device Configuration'?></label>
                                       
                                       <?php if (strpos($role['permissions'], 'device_view ') !== false): ?>
                                         <div class="form-check form-check-inline">
@@ -369,6 +453,10 @@
                                   </div>
                                 <?php endif; ?>
 
+                              </div>
+
+                              <div class="inner-content mt-2 col-md-6" data-target="<?= $role['name'] ?>-permissions"  style="display: none;">
+
                                 <?php if (strpos($role['permissions'], 'shift') !== false): ?>
                                   <div class="form-group col-md-12">
                                       <label class="d-block"><?=$this->lang->line('shift')?$this->lang->line('shift'):'Shift'?></label>
@@ -402,6 +490,40 @@
                                       <?php endif; ?>
                                   </div>
                                 <?php endif; ?>
+
+                                <?php if (strpos($role['permissions'], 'leave_type') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('leave_type')?$this->lang->line('leave_type'):'Leave Type'?></label>
+                                      
+                                      <?php if (strpos($role['permissions'], 'leave_type_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_leave_type_view" name="<?= $role['name'] ?>_leave_type_view" value="<?=(isset($permissions->leave_type_view) && !empty($permissions->leave_type_view))?$permissions->leave_type_view:0?>" <?=(isset($permissions->leave_type_view) && !empty($permissions->leave_type_view) && $permissions->leave_type_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_leave_type_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+
+                                      <?php if (strpos($role['permissions'], 'leave_type_create ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_leave_type_create" name="<?= $role['name'] ?>_leave_type_create" value="<?=(isset($permissions->leave_type_create) && !empty($permissions->leave_type_create))?$permissions->leave_type_create:0?>" <?=(isset($permissions->leave_type_create) && !empty($permissions->leave_type_create) && $permissions->leave_type_create == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_leave_type_create"><?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                      
+                                      <?php if (strpos($role['permissions'], 'leave_type_edit ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_leave_type_edit" name="<?= $role['name'] ?>_leave_type_edit" value="<?=(isset($permissions->leave_type_edit) && !empty($permissions->leave_type_edit))?$permissions->leave_type_edit:0?>" <?=(isset($permissions->leave_type_edit) && !empty($permissions->leave_type_edit) && $permissions->leave_type_edit == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_leave_type_edit"><?=$this->lang->line('edit')?$this->lang->line('edit'):'Edit'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                      
+                                      <?php if (strpos($role['permissions'], 'leave_type_delete ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_leave_type_delete" name="<?= $role['name'] ?>_leave_type_delete" value="<?=(isset($permissions->leave_type_delete) && !empty($permissions->leave_type_delete))?$permissions->leave_type_delete:0?>" <?=(isset($permissions->leave_type_delete) && !empty($permissions->leave_type_delete) && $permissions->leave_type_delete == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_leave_type_delete"><?=$this->lang->line('delete')?$this->lang->line('delete'):'Delete'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                  </div>
+                                <?php endif; ?>
                                 
                                 <?php if (strpos($role['permissions'], 'time_schedule') !== false): ?>
                                   <div class="form-group col-md-12">
@@ -422,11 +544,46 @@
                                       <?php endif; ?>
                                   </div>
                                 <?php endif; ?>
-                              
-                              </div>
 
-                              <div class="inner-content mt-2 col-md-6" data-target="<?= $role['name'] ?>-permissions"  style="display: none;">
+                                <?php if (strpos($role['permissions'], 'general') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('general_settings')?$this->lang->line('general_settings'):'General Settings'?> 
+                                      </label>
+                                      <?php if (strpos($role['permissions'], 'general_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_general_view" name="<?= $role['name'] ?>_general_view" value="<?=(isset($permissions->general_view) && !empty($permissions->general_view))?$permissions->general_view:0?>" <?=(isset($permissions->general_view) && !empty($permissions->general_view) && $permissions->general_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_general_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                  </div>
+                                <?php endif; ?>
 
+                                <?php if (strpos($role['permissions'], 'company') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('company_settings')?$this->lang->line('company_settings'):'Company Settings'?> 
+                                      </label>
+                                      <?php if (strpos($role['permissions'], 'company_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_company_view" name="<?= $role['name'] ?>_company_view" value="<?=(isset($permissions->company_view) && !empty($permissions->company_view))?$permissions->company_view:0?>" <?=(isset($permissions->company_view) && !empty($permissions->company_view) && $permissions->company_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_company_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                  </div>
+                                <?php endif; ?>
+
+                                <?php if (strpos($role['permissions'], 'support') !== false): ?>
+                                  <div class="form-group col-md-12">
+                                      <label class="d-block"><?=$this->lang->line('support')?$this->lang->line('support'):'Support'?> </label>
+                                      
+                                      <?php if (strpos($role['permissions'], 'support_view ') !== false): ?>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_support_view" name="<?= $role['name'] ?>_support_view" value="<?=(isset($permissions->support_view) && !empty($permissions->support_view))?$permissions->support_view:0?>" <?=(isset($permissions->support_view) && !empty($permissions->support_view) && $permissions->support_view == 1)?'checked':''?>>
+                                          <label class="form-check-label" for="<?= $role['name'] ?>_support_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
+                                        </div>
+                                      <?php endif; ?>
+                                  </div>
+                                <?php endif; ?>
+                                
                                 <?php if (strpos($role['permissions'], 'meetings') !== false): ?>
                                   <div class="form-group col-md-12">
                                       <label class="d-block"><?=$this->lang->line('video_meetings')?$this->lang->line('video_meetings'):'Video Meetings'?></label>
@@ -495,39 +652,6 @@
                                   </div>
                                 <?php endif; ?>
 
-                                <?php if (strpos($role['permissions'], 'gantt') !== false): ?>
-                                  <div class="form-group col-md-12">
-                                      <label class="d-block"><?=$this->lang->line('gantt')?$this->lang->line('gantt'):'Gantt'?></label>
-
-                                      <?php if (strpos($role['permissions'], 'gantt_view ') !== false): ?>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_gantt_view" name="<?= $role['name'] ?>_gantt_view" value="<?=(isset($permissions->gantt_view) && !empty($permissions->gantt_view))?$permissions->gantt_view:0?>" <?=(isset($permissions->gantt_view) && !empty($permissions->gantt_view) && $permissions->gantt_view == 1)?'checked':''?>>
-                                          <label class="form-check-label" for="<?= $role['name'] ?>_gantt_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
-                                        </div>
-                                      <?php endif; ?>
-
-                                      <?php if (strpos($role['permissions'], 'gantt_edit ') !== false): ?>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_gantt_edit" name="<?= $role['name'] ?>_gantt_edit" value="<?=(isset($permissions->gantt_edit) && !empty($permissions->gantt_edit))?$permissions->gantt_edit:0?>" <?=(isset($permissions->gantt_edit) && !empty($permissions->gantt_edit) && $permissions->gantt_edit == 1)?'checked':''?>>
-                                          <label class="form-check-label" for="<?= $role['name'] ?>_gantt_edit"><?=$this->lang->line('drag_date')?htmlspecialchars($this->lang->line('drag_date')):'Drag Date'?> / <?=$this->lang->line('edit')?$this->lang->line('edit'):'Edit'?></label>
-                                        </div>
-                                      <?php endif; ?>
-                                  </div>
-                                <?php endif; ?>
-                              
-                                <?php if (strpos($role['permissions'], 'reports') !== false): ?>
-                                  <div class="form-group col-md-12">
-                                      <label class="d-block"><?=$this->lang->line('reports')?$this->lang->line('reports'):'Reports'?> </label>
-
-                                      <?php if (strpos($role['permissions'], 'reports_view ') !== false): ?>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_reports_view" name="<?= $role['name'] ?>_reports_view" value="<?=(isset($permissions->reports_view) && !empty($permissions->reports_view))?$permissions->reports_view:0?>" <?=(isset($permissions->reports_view) && !empty($permissions->reports_view) && $permissions->reports_view == 1)?'checked':''?>>
-                                          <label class="form-check-label" for="<?= $role['name'] ?>_reports_view"><?=$this->lang->line('view')?htmlspecialchars($this->lang->line('view')):'View'?></label>
-                                        </div>
-                                      <?php endif; ?>
-                                  </div>
-                                <?php endif; ?>
-
                                 <?php if (strpos($role['permissions'], 'calendar') !== false): ?>
                                   <div class="form-group col-md-12">
                                       <label class="d-block"><?=$this->lang->line('calendar')?$this->lang->line('calendar'):'Calendar'?> </label>
@@ -585,28 +709,6 @@
                                       <?php endif; ?>
                                   </div>
                                 <?php endif; ?>
-
-                                <?php if (strpos($role['permissions'], 'user') !== false): ?>
-                                  <div class="form-group col-md-12">
-                                      <label class="d-block"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Team Members'?> 
-                                        <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="right" title="" data-original-title="<?=$this->lang->line('only_admin_have_permission_to_add_edit_and_delete_users_you_can_make_any_user_as_admin_they_will_get_all_this_permissions_by_default')?$this->lang->line('only_admin_have_permission_to_add_edit_and_delete_users_you_can_make_any_user_as_admin_they_will_get_all_this_permissions_by_default'):"Only admin have permission to add, edit and delete users. You can make any user as admin they will get all this permissions by default."?>"></i>
-                                      </label>
-                                      
-                                      <?php if (strpos($role['permissions'], 'user_view ') !== false): ?>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_view" name="<?= $role['name'] ?>_user_view" value="<?=(isset($permissions->user_view) && !empty($permissions->user_view))?$permissions->user_view:0?>" <?=(isset($permissions->user_view) && !empty($permissions->user_view) && $permissions->user_view == 1)?'checked':''?>>
-                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_view"><?=$this->lang->line('view')?$this->lang->line('view'):'View'?></label>
-                                        </div>
-                                      <?php endif; ?>
-
-                                      <?php if (strpos($role['permissions'], 'user_edit ') !== false): ?>
-                                        <div class="form-check form-check-inline">
-                                          <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_user_edit" name="<?= $role['name'] ?>_user_edit" value="<?=(isset($permissions->user_edit) && !empty($permissions->user_edit))?$permissions->user_edit:0?>" <?=(isset($permissions->user_edit) && !empty($permissions->user_edit) && $permissions->user_edit == 1)?'checked':''?>>
-                                          <label class="form-check-label" for="<?= $role['name'] ?>_user_edit"><?=$this->lang->line('edit')?$this->lang->line('edit'):'Edit'?></label>
-                                        </div>
-                                      <?php endif; ?>
-                                  </div>
-                                <?php endif; ?>
                                 
                                 <?php if (strpos($role['permissions'], 'client') !== false): ?>
                                   <div class="form-group col-md-12">
@@ -620,7 +722,7 @@
                                           <label class="form-check-label" for="<?= $role['name'] ?>_client_view"><?=$this->lang->line('view')?$this->lang->line('view'):'View'?></label>
                                         </div>
                                       <?php endif; ?>
-                                      
+
                                       <?php if (strpos($role['permissions'], 'client_create ') !== false): ?>
                                         <div class="form-check form-check-inline">
                                           <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_client_create" name="<?= $role['name'] ?>_client_create" value="<?=(isset($permissions->client_create) && !empty($permissions->client_create))?$permissions->client_create:0?>" <?=(isset($permissions->client_create) && !empty($permissions->client_create) && $permissions->client_create == 1)?'checked':''?>>
@@ -635,12 +737,13 @@
                                         </div>
                                       <?php endif; ?>
                                       
-                                      <?php if (strpos($role['permissions'], 'client_delete ') !== false): ?>
+                                      <!-- <?php if (strpos($role['permissions'], 'client_delete ') !== false): ?>
                                         <div class="form-check form-check-inline">
                                           <input class="form-check-input" type="checkbox" id="<?= $role['name'] ?>_client_delete" name="<?= $role['name'] ?>_client_delete" value="<?=(isset($permissions->client_delete) && !empty($permissions->client_delete))?$permissions->client_delete:0?>" <?=(isset($permissions->client_delete) && !empty($permissions->client_delete) && $permissions->client_delete == 1)?'checked':''?>>
                                           <label class="form-check-label" for="<?= $role['name'] ?>_client_delete"><?=$this->lang->line('delete')?$this->lang->line('delete'):'Delete'?></label>
                                         </div>
-                                      <?php endif; ?>
+                                      <?php endif; ?> -->
+
                                   </div>
                                 <?php endif; ?>
                               </div>
