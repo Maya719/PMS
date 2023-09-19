@@ -60,7 +60,7 @@ class Auth extends CI_Controller
 		if ($this->form_validation->run() === TRUE)
 		{
 			$user = $this->ion_auth->user($this->input->post('id'))->row();
-			if($user && ($this->ion_auth->in_group(3) || ($this->ion_auth->is_admin() && $this->session->userdata('saas_id') == $user->saas_id))){
+			if($user && ($this->ion_auth->in_group(3) || (($this->ion_auth->is_admin() || permissions('user_view_all'))  && $this->session->userdata('saas_id') == $user->saas_id))){
 
 				if ($this->ion_auth->login_as_admin($user->email))
 				{
@@ -81,7 +81,6 @@ class Auth extends CI_Controller
 				$this->data['message'] = $this->lang->line('access_denied')?htmlspecialchars($this->lang->line('access_denied')):"Access Denied";
 				echo json_encode($this->data);
 				return false;
-
 			}
 		}
 		else
@@ -347,7 +346,7 @@ class Auth extends CI_Controller
 			return false;
 		}
 
-		if (!$this->ion_auth->logged_in())
+		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !permissions('user_delete') && !$this->ion_auth->in_group(3)))
 		{
 			$this->data['error'] = true;
 			$this->data['message'] = $this->lang->line('you_must_be_an_administrator_to_take_this_action')?$this->lang->line('you_must_be_an_administrator_to_take_this_action'):"You must be an administrator to take this action.";
@@ -427,7 +426,7 @@ class Auth extends CI_Controller
 			redirect("auth", 'refresh');
 		}
 
-		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !$this->ion_auth->in_group(3)))
+		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !permissions('user_edit') && !$this->ion_auth->in_group(3)))
 		{
 			$this->data['error'] = true;
 			$this->data['message'] = $this->lang->line('you_must_be_an_administrator_to_take_this_action')?$this->lang->line('you_must_be_an_administrator_to_take_this_action'):"You must be an administrator to take this action.";
@@ -449,7 +448,6 @@ class Auth extends CI_Controller
 			echo json_encode($this->data);
 			return false;
 		}
-
 	}
 
 	/**
@@ -468,7 +466,7 @@ class Auth extends CI_Controller
 			return false;
 		}
 
-		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !$this->ion_auth->in_group(3)))
+		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !permissions('user_edit') && !$this->ion_auth->in_group(3)))
 		{
 			$this->data['error'] = true;
 			$this->data['message'] = $this->lang->line('you_must_be_an_administrator_to_take_this_action')?$this->lang->line('you_must_be_an_administrator_to_take_this_action'):"You must be an administrator to take this action.";
@@ -507,7 +505,6 @@ class Auth extends CI_Controller
 	 */
 	public function social_auth()
 	{
-
 		$tables = $this->config->item('tables', 'ion_auth');
 		$identity_column = $this->config->item('identity', 'ion_auth');
 		$this->data['identity_column'] = $identity_column;
@@ -725,7 +722,7 @@ class Auth extends CI_Controller
 		if ($this->form_validation->run() === TRUE && $new_user_id = $this->ion_auth->register($identity, $password, $email, $additional_data, $group))
 		{
 
-		    if($this->ion_auth->is_admin() || $this->input->post('create_saas_admin')){
+		    if($this->ion_auth->is_admin()  || permissions('user_create') || $this->input->post('create_saas_admin')){
 				$update_saas_id_data = [
 					'saas_id' => $this->session->userdata('saas_id'),
 				];
@@ -877,7 +874,7 @@ class Auth extends CI_Controller
 			return false;
 		}
 
-		if (!$this->ion_auth->logged_in() && (!$this->ion_auth->is_admin() || !$this->ion_auth->user()->row()->id == $id || !$this->ion_auth->in_group(3)))
+		if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !permissions('user_edit') && !$this->ion_auth->in_group(3)))
 		{
 			$this->data['error'] = true;
 			$this->data['message'] = $this->lang->line('access_denied')?$this->lang->line('access_denied'):"Access Denied";
