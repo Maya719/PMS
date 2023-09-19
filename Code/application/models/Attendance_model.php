@@ -2165,32 +2165,27 @@ function get_attendance_report3($get){
                                 $halfDay++;
                                 $halfDayExecution = true;
                             }
-                            elseif($ending_time != $half_day_check_out && $last_check_in_time < $ending_time ){
+                            if($ending_time != $half_day_check_out && $last_check_in_time < $ending_time && $last_check_in_time > $half_day_check_out){
                                 $late_seconds = $ending_time - $last_check_in_time;
                                 $total_late_minutes = floor($late_seconds / 60); // Calculate the total minutes late (rounding down)
                                 $late += $total_late_minutes;
                                 $total_minutes += $total_late_minutes;
-                                if(!$leaveExecution){
+                                if(!$leaveExecution && !$halfDayExecution){
                                     $row[$row[$date]] = '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>';
-                                }else{
+                                }elseif($halfDayExecution || $leaveExecution){
                                     $row[$row[$date]] .= '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>';
                                 }
                             }
-                            elseif ($first_check_in_time > $starting_time && $first_check_in_time < $half_day_check_in ) { 
+                            if ($first_check_in_time > $starting_time && $first_check_in_time < $half_day_check_in ) { 
                                 $late_seconds = $first_check_in_time - $starting_time;
                                 $total_late_minutes = floor($late_seconds / 60); // Calculate the total minutes late (rounding down)
                                 $late += $total_late_minutes;
                                 $total_minutes += $total_late_minutes;
-                                if(!$leaveExecution){
+                                if(!$leaveExecution && !$halfDayExecution){
                                     $row[$row[$date]] = '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>';
-                                }else{
+                                }elseif($halfDayExecution || $leaveExecution){
                                     $row[$row[$date]] = '<div class="text-warning"><strong>' . $total_minutes . ' min<br> Late</strong></div>'.$row[$row[$date]];
                                 }
-                            }
-                            elseif($last_check_in_time < $half_day_check_out && !$halfDayExecution && !$leaveExecution) { // If shift ending time is later than the last check-in time
-                                $row[$row[$date]] = '<div class="text-danger"><strong>HD</strong></div>';
-                                $halfDay++;
-                                $halfDayExecution = true;
                             }
                             
                             if($total_minutes > $graceMinutes){
