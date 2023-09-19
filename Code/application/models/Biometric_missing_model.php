@@ -9,7 +9,7 @@ class Biometric_missing_model extends CI_Model
     }
     
     function delete($user_id, $id){
-        if($this->ion_auth->is_admin()){
+        if($this->ion_auth->is_admin() || permissions('biometric_request_view_all')){
         $this->db->where('id', $id);
         $this->db->where('saas_id', $this->session->userdata('saas_id'));
         }else{
@@ -25,7 +25,7 @@ class Biometric_missing_model extends CI_Model
 
     function get_biometric_by_id($id){
         $where = "";
-        if($this->ion_auth->is_admin()){
+        if($this->ion_auth->is_admin() || permissions('biometric_request_view_all')){
             $where .= " WHERE id = $id ";
         }else{
             $where .= " WHERE user_id = ".$this->session->userdata('user_id');
@@ -49,7 +49,7 @@ class Biometric_missing_model extends CI_Model
         $get = $this->input->get();
         $where = '';
     
-        if ($this->ion_auth->is_admin()) {
+        if ($this->ion_auth->is_admin() || permissions('biometric_request_view_all')) {
             if (isset($get['user_id']) && !empty($get['user_id'])) {
                 $where .= " WHERE bm.user_id = ".$get['user_id'];
             } else {
@@ -144,15 +144,31 @@ class Biometric_missing_model extends CI_Model
             $tempRow['time'] = format_date($result['time'], system_time_format());
             $tempRow['sr_no'] = $counter;
             $tempRow['employee_id'] = $result['employee_id'];
-            if ($this->ion_auth->is_admin()) {
+            if ($this->ion_auth->is_admin() || permissions('biometric_request_view_all')) {
                 if ($result['status'] == 1) {
                     $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
                 } else{
-                    $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-biometric" data-edit="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_biometric" data-id="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    if(permissions('biometric_request_edit') && permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-biometric" data-edit="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_biometric" data-id="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }elseif(!permissions('biometric_request_edit') && permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_biometric" data-id="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }elseif(permissions('biometric_request_edit') && !permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-biometric" data-edit="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }elseif(!permissions('biometric_request_edit') && !permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }
                 }
             } else {
                 if ($result['status'] == 0) {
-                    $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-biometric" data-edit="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_biometric" data-id="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    if(permissions('biometric_request_edit') && permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-biometric" data-edit="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_biometric" data-id="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }elseif(!permissions('biometric_request_edit') && permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_biometric" data-id="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }elseif(permissions('biometric_request_edit') && !permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-biometric" data-edit="'.$result['id'].'" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }elseif(!permissions('biometric_request_edit') && !permissions('biometric_request_delete')){
+                        $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
+                    }
                 } else {
                     $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit').'"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete').'"><i class="fas fa-trash"></i></a></span>';
                 }
