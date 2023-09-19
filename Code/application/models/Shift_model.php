@@ -130,7 +130,19 @@ class Shift_model extends CI_Model
             $tempRow['half_day_check_in'] = format_date($result['half_day_check_in'], system_time_format());
             $tempRow['half_day_check_out'] = format_date($result['half_day_check_out'], system_time_format());
             $tempRow['sr_no'] = $counter;
-            $tempRow['action'] = '<span class="d-flex"><a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-shift" data-edit="' . $result['id'] . '" data-toggle="tooltip" title="' . ($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit') . '"><i class="fas fa-pen"></i></a><a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_shift" data-id="' . $result['id'] . '" data-toggle="tooltip" title="' . ($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete') . '"><i class="fas fa-trash"></i></a></span>';
+            if($this->ion_auth->is_admin() || permissions('shift_edit')){
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 modal-edit-shift" data-edit="' . $result['id'] . '" data-toggle="tooltip" title="' . ($this->lang->line('edit') ? htmlspecialchars($this->lang->line('edit')) : 'Edit') . '"><i class="fas fa-pen"></i></a>';
+            }else{
+                $edit_btn = '<a href="#" class="btn btn-icon btn-sm btn-primary mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('edit')?htmlspecialchars($this->lang->line('edit')):'Edit').'"><i class="fas fa-pen"></i></a>';
+            }
+
+            if($this->ion_auth->is_admin() || permissions('shift_delete')){
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 delete_shift" data-id="' . $result['id'] . '" data-toggle="tooltip" title="' . ($this->lang->line('delete') ? htmlspecialchars($this->lang->line('delete')) : 'Delete') . '"><i class="fas fa-trash"></i></a>';
+            }else{
+                $delete_btn = '<a href="#" class="btn btn-icon btn-sm btn-danger mr-1 disabled" data-toggle="tooltip" title="'.($this->lang->line('delete')?htmlspecialchars($this->lang->line('delete')):'Delete').'"><i class="fas fa-trash"></i></a>';
+            }
+
+            $tempRow['action'] = '<span class="d-flex">'.$edit_btn.''.$delete_btn.'</span>';
            
             $rows[] = $tempRow;
             $counter++;
