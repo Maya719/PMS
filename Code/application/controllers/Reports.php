@@ -11,7 +11,7 @@ class Reports extends CI_Controller
 
 	public function attendance()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || permissions('reports_view')) && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Attendance Report - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -27,7 +27,7 @@ class Reports extends CI_Controller
 
 	public function leaves()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() && ($this->ion_auth->is_admin() || permissions('reports_view')) && is_module_allowed('reports')){
 			$this->data['page_title'] = 'Leaves - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
 			$this->data['system_users'] = $this->ion_auth->users(array(1,2))->result();
@@ -39,13 +39,13 @@ class Reports extends CI_Controller
 
 	public function timesheet()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Timesheet - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
 			$this->data['system_users'] = $this->ion_auth->users(array(1,2))->result();
 			
-			if($this->ion_auth->is_admin()){
+			if( ($this->ion_auth->is_admin() || permissions('reports_view')) ){
 				if(isset($_GET['user']) && !empty($_GET['user']) && is_numeric($_GET['user'])){
 					$this->data['projects'] = $this->projects_model->get_projects($_GET['user']);
 				}else{
@@ -62,7 +62,7 @@ class Reports extends CI_Controller
 
 	public function estimates()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Estimates - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -76,7 +76,7 @@ class Reports extends CI_Controller
 
 	public function leads()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Leads - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -90,7 +90,7 @@ class Reports extends CI_Controller
 
 	public function meetings()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Video Meetings - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -102,7 +102,7 @@ class Reports extends CI_Controller
 
 	public function clients()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Clients - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -115,7 +115,7 @@ class Reports extends CI_Controller
 
 	public function team()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Team Members - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -128,7 +128,7 @@ class Reports extends CI_Controller
 
 	public function tasks()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			
 			$this->data['page_title'] = 'Tasks - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -149,7 +149,7 @@ class Reports extends CI_Controller
 
 	public function projects()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports')){
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports')){
 			$this->data['page_title'] = 'Projects - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
 			
@@ -168,7 +168,7 @@ class Reports extends CI_Controller
 
 	public function expenses()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports'))
+		if ($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports'))
 		{
 			$this->data['page_title'] = 'Expenses - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -179,7 +179,7 @@ class Reports extends CI_Controller
 
 	public function get_expenses()
 	{	
-		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+		if ($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view')) )
 		{
 			$results = $this->expenses_model->get_expenses_chart();
 			$rows = array();
@@ -217,7 +217,7 @@ class Reports extends CI_Controller
 	
 	public function get_expenses_chart()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view')) )
 		{
 			if($this->input->post('from')){
 				$from = new DateTime($this->input->post('from'));
@@ -270,7 +270,7 @@ class Reports extends CI_Controller
 
 	public function income()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports'))
+		if ($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports'))
 		{
 			$this->data['page_title'] = 'Income - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -281,7 +281,7 @@ class Reports extends CI_Controller
 
 	public function get_income($invoice_id = '')
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view')) )
 		{
 			$temp = array();
 			$temprow = array();
@@ -377,7 +377,7 @@ class Reports extends CI_Controller
 
 	public function get_income_chart()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view')) )
 		{
 			if($this->input->post('from')){
 				$from = new DateTime($this->input->post('from'));
@@ -456,7 +456,7 @@ class Reports extends CI_Controller
 
 	public function index()
 	{
-		if ($this->ion_auth->logged_in() && $this->ion_auth->is_admin() && is_module_allowed('reports'))
+		if ($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view'))  && is_module_allowed('reports'))
 		{
 			$this->data['page_title'] = 'Income VS Expenses - '.company_name();
 			$this->data['current_user'] = $this->ion_auth->user()->row();
@@ -469,7 +469,7 @@ class Reports extends CI_Controller
 
 	public function get_income_vs_expenses_chart()
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view')) )
 		{
 			if($this->input->post('from')){
 				$from = new DateTime($this->input->post('from'));
@@ -559,7 +559,7 @@ class Reports extends CI_Controller
 
 	public function get_income_vs_expenses($send_array = false)
 	{
-		if($this->ion_auth->logged_in() && $this->ion_auth->is_admin())
+		if($this->ion_auth->logged_in() &&  ($this->ion_auth->is_admin() || permissions('reports_view')) )
 		{
 			$get = $this->input->get();
 
