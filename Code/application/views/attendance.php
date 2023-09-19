@@ -52,7 +52,7 @@
                 <a href="#" id="modal-add-attendance" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
               <?php } ?> -->
               <?php
-                if(!$this->ion_auth->is_admin()){
+                if(!$this->ion_auth->is_admin() && !permissions('attendance_view_all')){
               ?>
               <div class="btn-group">
                 <a href="<?=base_url('attendance/user_attendance/'.$user_id)?>" class="btn btn-sm "><?=$this->lang->line('report')?htmlspecialchars($this->lang->line('report')):'Report View'?></a>
@@ -73,7 +73,7 @@
                 <div class="card card-primary card-statistic-2">
                   <div class="card-stats">
                     <?php
-                    if($this->ion_auth->is_admin()){
+                    if($this->ion_auth->is_admin() || permissions('attendance_view_all')){
                     ?>
                     <div class="card-stats-title"><?=$this->lang->line('attendance')?$this->lang->line('attendance'):'Attendance'?></div>
                     <div class="card-stats-items mb-3">
@@ -206,7 +206,7 @@
               </div>
             </div>
             <div class="row">
-              <?php if($this->ion_auth->is_admin()){ ?>
+              <?php if($this->ion_auth->is_admin() || permissions('attendance_view_all')){ ?>
                 <div class="form-group col-md-6">
                   <select class="form-control select2" id="shifts_ids">
                     <option value=""><?=$this->lang->line('select_shift')?$this->lang->line('select_shift'):'Select Shift'?></option>
@@ -234,7 +234,7 @@
                   </select>
                 </div>
               <?php } ?>
-              <?php if($this->ion_auth->is_admin()){ ?>
+              <?php if($this->ion_auth->is_admin() || permissions('attendance_view_all')){ ?>
               <div class="form-group col-md-6">
                 <input type="text" name="from" id="from" class="form-control">
               </div>
@@ -285,7 +285,7 @@
                       <table class='table-striped' id='attendance_list'
                         data-toggle="table"
                         <?php
-                          if ($this->ion_auth->is_admin()) {
+                          if ($this->ion_auth->is_admin() || permissions('attendance_view_all')) {
                               $url = base_url('attendance/get_attendance');
                           } else {
                               $url = base_url('attendance/get_user_attendance');
@@ -313,7 +313,7 @@
                             <th data-width="10%" data-field="s.n" data-sortable="false"><?=$this->lang->line('s.n')?$this->lang->line('s.n'):'#'?></th>
                             <th data-width="20%" data-field="user_id" data-sortable="false"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Emp ID'?></th>
                             <th data-field="user" data-sortable="false"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Employee'?></th>
-                            <?php if(!$this->ion_auth->is_admin()){ ?><th data-field="date" data-sortable="false"><?=$this->lang->line('date')?htmlspecialchars($this->lang->line('date')):'Date'?></th><?php } ?>
+                            <?php if(!$this->ion_auth->is_admin() && !permissions('attendance_view_all')){ ?><th data-field="date" data-sortable="false"><?=$this->lang->line('date')?htmlspecialchars($this->lang->line('date')):'Date'?></th><?php } ?>
                             <th data-field="check_in" data-sortable="false"><?=$this->lang->line('check_in')?htmlspecialchars($this->lang->line('check_in')):'Time (in/out)'?></th>
                             <th data-field="shift_name" data-sortable="false" data-visible="false"><?=$this->lang->line('shift_name')?htmlspecialchars($this->lang->line('shift_name')):'Shift'?></th>
                           </tr>
@@ -329,9 +329,10 @@
     <?php $this->load->view('includes/footer'); ?>
     </div>
   </div>
-<form action="<?=base_url('attendance/create')?>" method="POST" class="modal-part" id="modal-add-attendance-part" data-title="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>" data-btn="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>">
 
-  <?php if($this->ion_auth->is_admin()){ ?>
+<!-- <form action="<?=base_url('attendance/create')?>" method="POST" class="modal-part" id="modal-add-attendance-part" data-title="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>" data-btn="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>">
+
+  <?php if($this->ion_auth->is_admin() || permissions('attendance_view_all')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Team Members'?></label>
       <select name="user_id" class="form-control select2 user_id">
@@ -390,7 +391,7 @@
     <textarea type="text" name="note" id="note" class="form-control"></textarea>
   </div>
 
-</form>
+</form> -->
 
 <div id="modal-edit-attendance"></div>
 
