@@ -21,7 +21,7 @@
             </div>
             <h1>
             <?=$this->lang->line('leaves')?$this->lang->line('leaves'):'Leaves'?> 
-              <?php if (!$this->ion_auth->in_group(4)){ ?>
+              <?php if (!$this->ion_auth->in_group(4) && ($this->ion_auth->in_group(1) || permissions('leaves_create'))){ ?>
                 <a href="#" id="modal-add-leaves" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create')?$this->lang->line('create'):'Create'?></a>
               <?php } ?>
             </h1>
@@ -32,7 +32,7 @@
           </div>
           <div class="section-body">
             <div class="row">
-              <?php if($this->ion_auth->is_admin()){ ?>
+              <?php if($this->ion_auth->in_group(1) || permissions('leaves_view_all')){ ?>
                 <div class="form-group col-md-6">
                   <select class="form-control select2 leaves_filter" id="leaves_filter_user">
                     <option value=""><?=$this->lang->line('select_users')?$this->lang->line('select_users'):'Select Users'?></option>
@@ -42,7 +42,7 @@
                   </select>
                 </div>
               <?php } ?>
-                <div class="form-group col-md-6">
+              <div class="form-group col-md-6">
                 <select class="form-control select2" name="filter" id="leaves_filter" onchange="updateDivContent()">
                   <option value="today"><?=$this->lang->line('select_filter')?$this->lang->line('select_users'):'Today'?></option>
                   <option value="ystdy"><?=$this->lang->line('select_filter')?$this->lang->line('select_users'):'Yesterday'?></option>
@@ -52,13 +52,14 @@
                   <option value="custom"><?=$this->lang->line('select_filter')?$this->lang->line('select_users'):'Custom'?></option>
                 </select>
               </div>
+            </div>
+            <div class="row">
                 <div id="myDiv" class="form-group col-md-6 hidden">
                   <input type="text" name="from" id="from" class="form-control datepicker">
                 </div>
                 <div id="myDiv2" class="form-group col-md-6 hidden">
                   <input type="text" name="too" id="too" class="form-control datepicker">
                 </div>
-              </div>
             </div>
             <div class="row">
                   <div class="col-md-12">
@@ -88,7 +89,7 @@
                             <thead>
                               <tr>
                                 <th data-field="sr_no" data-sortable="false"><?=$this->lang->line('sr_no')?$this->lang->line('sr_no'):'#'?></th>
-                                <?php if($this->ion_auth->is_admin()){ ?>
+                                <?php if($this->ion_auth->in_group(1) || permissions('leaves_view_all')){ ?>
                                 <th data-field="employee_id" data-sortable="true" data-visible="false"><?=$this->lang->line('employee_id')?$this->lang->line('employee_id'):'Emp ID'?></th>
                                   <th data-field="user" data-sortable="false"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Employee'?></th>
                                 <?php } ?>
@@ -119,7 +120,7 @@
 
 <form action="<?=base_url('leaves/create')?>" method="POST" class="modal-part" id="modal-add-leaves-part" data-title="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>" data-btn="<?=$this->lang->line('create')?$this->lang->line('create'):'Create'?>">
 
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->in_group(1) || permissions('leaves_view_all')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Users'?></label>
       <select name="user_id_add" id="user_id_add" class="form-control select2">
@@ -142,6 +143,7 @@
   <!--</div>-->
   
   <div class="form-group">
+      <label><?=$this->lang->line('type')?$this->lang->line('type'):'Type'?></label>
       <select class="form-control select2" name="type_add" id="type_add" >
         <option value=""><?=$this->lang->line('select_type')?$this->lang->line('select_type'):'Select Type'?></option>
         <?php foreach($leaves_type as $leaves){ ?>
@@ -151,7 +153,7 @@
       </select>
   </div>
 
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->in_group(1) || permissions('leaves_view_all')){ ?>
   <div class="form-group">
       <label><?=$this->lang->line('paid_unpaid')?$this->lang->line('paid_unpaid'):'Paid / Unpaid Leave'?></label>
       <select name="paid" class="form-control select2">
@@ -236,7 +238,7 @@
 <form action="<?=base_url('leaves/edit')?>" method="POST" class="modal-part" id="modal-edit-leaves-part" data-title="<?=$this->lang->line('edit')?$this->lang->line('edit'):'Edit'?>" data-btn="<?=$this->lang->line('update')?$this->lang->line('update'):'Update'?>">
   <input type="hidden" name="update_id" id="update_id" value="">
 
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->in_group(1) || permissions('leaves_view_all')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'users'?></label>
       <select name="user_id" id="user_id" class="form-control select2">
@@ -259,6 +261,7 @@
   <!--</div>-->
 
     <div class="form-group">
+      <label><?=$this->lang->line('type')?$this->lang->line('type'):'Type'?></label>
       <select class="form-control select2" name="type" id="type" >
         <?php foreach($leaves_type as $leaves){ ?>
           <option value="<?= $leaves['id'] ?>"><?= $leaves['name'] ?></option>
@@ -267,7 +270,7 @@
       </select>
   </div>
   
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->in_group(1) || permissions('leaves_view_all')){ ?>
   <div class="form-group">
       <label><?=$this->lang->line('paid_unpaid')?$this->lang->line('paid_unpaid'):'Paid / Unpaid Leave'?></label>
       <select name="paid" id="paid" class="form-control select2">
@@ -332,7 +335,7 @@
 
 
   
-  <?php if($this->ion_auth->is_admin()){ ?>
+  <?php if($this->ion_auth->in_group(1) || permissions('leaves_status')){ ?>
     <div class="form-group">
       <label><?=$this->lang->line('status')?$this->lang->line('status'):'Status'?></label>
       <select name="status" id="status" class="form-control select2">
@@ -545,7 +548,6 @@
 
       $('#leaves_list').bootstrapTable('refreshOptions', options);
   }
-
 
 </script>
 
