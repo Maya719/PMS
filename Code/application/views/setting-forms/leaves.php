@@ -3,7 +3,7 @@
             
 <div class="card-body row">
     <div class="col-md-1 create" >
-        <?php if($this->ion_auth->is_admin() ){ ?>
+        <?php if($this->ion_auth->is_admin() || permissions('leave_type_create')){ ?>
             <a href="#" id="modal-add-leaves-type" class="btn btn-sm btn-icon icon-left btn-primary"><i class="fas fa-plus"></i> <?=$this->lang->line('create_leave_type')?$this->lang->line('create_leave_type'):'Create Leave Type'?></a>
         <?php } ?>
     </div>
