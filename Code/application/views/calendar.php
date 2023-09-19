@@ -42,7 +42,7 @@
                 </select>
               </div>
               
-              <?php if(!$this->ion_auth->in_group(4)){ ?>
+              <?php if(!is_client()){ ?>
               <div class="form-group col-md-2">
                 <select class="form-control select2 project_filter">
                   <option value="<?=base_url("projects/calendar")?>"><?=$this->lang->line('select_users')?$this->lang->line('select_users'):'Select Users'?></option>
@@ -54,7 +54,7 @@
               
               <div class="form-group col-md-2">
                 <select class="form-control select2 project_filter">
-                  <option value="<?=base_url("projects/calendar")?>"><?=$this->lang->line('select_observer')?$this->lang->line('select_observer'):'Select Observer'?></option>
+                  <option value="<?=base_url("projects/calendar")?>"><?=$this->lang->line('select_client')?$this->lang->line('select_client'):'Select Client'?></option>
                   <?php foreach($system_clients as $system_client){ if($system_client->saas_id == $this->session->userdata('saas_id')){ ?>
                   <option value="<?=base_url("projects/calendar?client=".htmlspecialchars($system_client->id))?>" <?=(isset($_GET['client']) && !empty($_GET['client']) && is_numeric($_GET['client']) && $_GET['client'] == $system_client->id)?"selected":""?>><?=htmlspecialchars($system_client->first_name)?> <?=htmlspecialchars($system_client->last_name)?></option>
                   <?php } } ?>
@@ -132,7 +132,7 @@
             <li class="nav-item">
               <a class="nav-link" id="attachments-tab" data-toggle="tab" href="#attachments" role="tab" aria-controls="attachments" aria-selected="false"><?=$this->lang->line('attachments')?$this->lang->line('attachments'):'Attachments'?></a>
             </li>
-            <?php if(!$this->ion_auth->in_group(4)){ ?>
+            <?php if(!is_client()){ ?>
             <li class="nav-item">
               <a class="nav-link" id="timesheet-tab" data-toggle="tab" href="#timesheet" role="tab" aria-controls="timesheet" aria-selected="false"><?=$this->lang->line('timesheet')?$this->lang->line('timesheet'):'Timesheet'?></a>
             </li>
@@ -189,7 +189,7 @@
                 </table>
             </div>
 
-            <?php if(!$this->ion_auth->in_group(4)){ ?>
+            <?php if(!is_client()){ ?>
             <div class="tab-pane fade" id="timesheet" role="tabpanel" aria-labelledby="timesheet-tab">        
               <table class='table-striped' id='timesheet_list'
                 data-toggle="table"
@@ -212,7 +212,7 @@
                 data-query-params="queryParams">
                 <thead>
                   <tr>
-                    <?php if($this->ion_auth->is_admin()){ ?>
+                    <?php if($this->ion_auth->is_admin() || permissions('project_view_all')){ ?>
                       <th data-field="user" data-sortable="false"><?=$this->lang->line('team_members')?$this->lang->line('team_members'):'Team Members'?></th>
                     <?php } ?>
                     <th data-field="starting_time" data-sortable="true"><?=$this->lang->line('starting_time')?$this->lang->line('starting_time'):'Starting Time'?></th>

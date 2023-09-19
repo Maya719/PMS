@@ -50,7 +50,7 @@
                 </select>
               </div>
               
-              <?php if(!$this->ion_auth->in_group(4)){ ?>
+              <?php if(!is_client()){ ?>
               <div class="form-group col-md-2">
                 <select class="form-control select2 project_filter">
                   <option value="<?=base_url("projects")?>"><?=$this->lang->line('select_users')?$this->lang->line('select_users'):'Select Users'?></option>
